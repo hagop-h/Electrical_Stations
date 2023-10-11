@@ -1,6 +1,6 @@
-package projet_java;
+package electrical_stations;
 
-import projet_java.NomVille.Nom;
+import electrical_stations.NomVille.Nom;
 
 public class Ville {
     Nom nom;

@@ -1,4 +1,4 @@
-package projet_java;
+package electrical_stations;
 public class Route {
     Ville villeA;
     Ville villeB;

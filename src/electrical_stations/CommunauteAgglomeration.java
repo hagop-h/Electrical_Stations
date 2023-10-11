@@ -1,12 +1,12 @@
-package projet_java;
+package electrical_stations;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class CommunauteAgglomeration {
-    private List<Ville> villes;
-    private List<Route> routes;
+    private List<electrical_stations.Ville> villes;
+    private List<electrical_stations.Route> routes;
     private List<Parking> parkings;
     private Graph graph; // graph pour representer les relations
 
@@ -30,7 +30,7 @@ public class CommunauteAgglomeration {
 
     public void genererSolutionNaive() {
         // Mark all cities as source recharge
-        for (Ville ville : villes) {
+        for (electrical_stations.Ville ville : villes) {
             ville.setSourceVilleTrue();
         }
 
