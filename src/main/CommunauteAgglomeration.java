@@ -1,8 +1,6 @@
 package main;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class CommunauteAgglomeration {
     private List<main.Ville> villes;
@@ -51,9 +49,7 @@ public class CommunauteAgglomeration {
         }
     }
 
-
-
-    private void mettreAJourVillesAvecRecharge() {
+    public void mettreAJourVillesAvecRecharge() {
         List<Ville> newRechargeCities = new ArrayList<>();
 
         for (Ville ville : villes) {
@@ -66,7 +62,6 @@ public class CommunauteAgglomeration {
             parkings.add(new Parking(newRechargeCity));
         }
     }
-
 
     public void configurerCommunaute() {
         Scanner scanner = new Scanner(System.in);
@@ -104,7 +99,7 @@ public class CommunauteAgglomeration {
         } while (choixMenu != 2);
     }
 
-    private void ajouterRouteMenu(Scanner scanner) {
+    public void ajouterRouteMenu(Scanner scanner) {
         System.out.print("Veuillez entrer les noms des villes entre lesquelles ajouter une route (séparés par un espace) : ");
         String[] nomsVilles = scanner.nextLine().split(" ");
 
@@ -123,7 +118,7 @@ public class CommunauteAgglomeration {
         }
     }
 
-    private int lireEntier(Scanner scanner) {
+    public int lireEntier(Scanner scanner) {
         while (true) {
             try {
                 int result = scanner.nextInt();
@@ -136,8 +131,7 @@ public class CommunauteAgglomeration {
         }
     }
 
-
-    private Ville trouverVilleParNom(String nom) {
+    public Ville trouverVilleParNom(String nom) {
         return villes.stream()
                 .filter(ville -> ville.nom.name().equalsIgnoreCase(nom))
                 .findFirst()
@@ -145,13 +139,12 @@ public class CommunauteAgglomeration {
     }
 
 
-    private void afficherMenuPrincipal() {
+    public void afficherMenuPrincipal() {
         System.out.println("\nMenu :");
         System.out.println("1) Ajouter une route");
         System.out.println("2) Fin");
         System.out.print("Votre choix : ");
     }
-
 
     public void trouverSolutionManuelle() {
         Scanner scanner = new Scanner(System.in);
@@ -206,13 +199,13 @@ public class CommunauteAgglomeration {
         } while (choixMenu != 4);
     }
 
-    private void afficherVillesAvecRecharge() {
+    public void afficherVillesAvecRecharge() {
         System.out.println("Villes avec zone de recharge :");
         parkings.forEach(parking -> System.out.println("- " + parking.ville.nom));
     }
 
 
-    private void afficherMenuSolutionManuelle() {
+    public void afficherMenuSolutionManuelle() {
         System.out.println("\nMenu :");
         System.out.println("1) Ajouter une zone de recharge");
         System.out.println("2) Retirer une zone de recharge");
@@ -220,7 +213,7 @@ public class CommunauteAgglomeration {
         System.out.print("Votre choix : ");
     }
 
-    private void afficherMenuZonesRecharge() {
+    public void afficherMenuZonesRecharge() {
         System.out.println("\nMenu Zones de Recharge :");
         System.out.println("1) Ajouter une zone de recharge");
         System.out.println("2) Retirer une zone de recharge");
@@ -229,7 +222,7 @@ public class CommunauteAgglomeration {
         System.out.print("Votre choix : ");
     }
     
-    private void afficherVillesAvecOuSansRecharge() {
+    public void afficherVillesAvecOuSansRecharge() {
         System.out.println("Villes avec zones de recharge :");
         for (Parking parking : parkings) {
             System.out.println("- " + parking.ville.nom);
@@ -243,7 +236,7 @@ public class CommunauteAgglomeration {
         }
     }
 
-    private void ajouterZoneRechargeMenu(Scanner scanner) {
+    public void ajouterZoneRechargeMenu(Scanner scanner) {
         System.out.print("Veuillez entrer le nom de la ville où ajouter une zone de recharge : ");
         String nomVille = scanner.nextLine();
 
@@ -281,7 +274,7 @@ public class CommunauteAgglomeration {
         }
     }
 
-    private void retirerZoneRechargeMenu(Scanner scanner) {
+    public void retirerZoneRechargeMenu(Scanner scanner) {
         System.out.print("Veuillez entrer le nom de la ville où retirer une zone de recharge : ");
         String nomVille = scanner.nextLine();
 
@@ -310,15 +303,14 @@ public class CommunauteAgglomeration {
         }
     }
 
-
-    private void retirerZoneRecharge(Ville ville) {
+    public void retirerZoneRecharge(Ville ville) {
 
     	parkings.removeIf(parking -> parking.ville.equals(ville));
 
         retirerZonesRechargeConnectees(ville);
     }
 
-    private void retirerZonesRechargeConnectees(Ville ville) {
+    public void retirerZonesRechargeConnectees(Ville ville) {
         for (Route route : routes) {
             if (route.villeA.equals(ville) && contientZoneRecharge(route.villeB) && !route.villeB.getSourceVille()) {
                 parkings.removeIf(parking -> parking.ville.equals(route.villeB));
@@ -328,7 +320,7 @@ public class CommunauteAgglomeration {
         }
     }
     
-    private boolean peutRetirerZoneRecharge(Ville ville) {
+    public boolean peutRetirerZoneRecharge(Ville ville) {
         for (Route route : routes) {
             if ((route.villeA.equals(ville) || route.villeB.equals(ville)) && !contientZoneRecharge(route.villeA) && !contientZoneRecharge(route.villeB) ) {
                 return false;
@@ -338,7 +330,7 @@ public class CommunauteAgglomeration {
     }
 
 
-    private boolean contientZoneRecharge(Ville ville) {
+    public boolean contientZoneRecharge(Ville ville) {
         for (Parking parking : parkings) {
             if (parking.ville.equals(ville)) {
                 return true;
@@ -347,7 +339,7 @@ public class CommunauteAgglomeration {
         return false;
     }
     
-    private boolean respecteContrainte(Ville ville) {
+    public boolean respecteContrainte(Ville ville) {
         if (!contientZoneRecharge(ville)) {
             // La ville doit avoir ses bornes ou être reliée à une ville avec des bornes
             return false;
@@ -368,8 +360,9 @@ public class CommunauteAgglomeration {
         }
         return true;
     }
+
     // Méthode pour vérifier si une ville est reliée directement à une ville avec des bornes
-    private boolean estRelieeAvecBorne(Ville ville) {
+    public boolean estRelieeAvecBorne(Ville ville) {
         for (Route route : routes) {
             if (route.villeA.equals(ville) || route.villeB.equals(ville)) {
                 if (contientZoneRecharge(route.villeA) || contientZoneRecharge(route.villeB)) {
@@ -379,6 +372,18 @@ public class CommunauteAgglomeration {
         }
         return false;
     }
-   
-  
+
+    // Pour les tests unitaires
+    public List<Ville> getVilles() {
+        return villes;
+    }
+
+    public List<Route> getRoutes() {
+        return routes;
+    }
+
+    public List<Parking> getParkings() {
+        return parkings;
+    }
+
 }
