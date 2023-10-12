@@ -2,10 +2,13 @@ package main;
 
 
 public class Parking {
-    public Ville ville;
+    private Ville ville;
     
     public Parking(Ville ville) {
         this.ville = ville;
     }
    
+    public Ville getVille() {
+    	return ville;
+    }
 }
