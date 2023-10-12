@@ -238,89 +238,46 @@ public class CommunauteAgglomeration {
         }
     }
 
-    public void ajouterZoneRechargeMenu(Scanner scanner) {
-        System.out.print("Veuillez entrer le nom de la ville où ajouter une zone de recharge : ");
-        String nomVille = scanner.nextLine();
 
-        Ville ville = trouverVilleParNom(nomVille);
-
-        if (ville != null) {
-            if (!contientZoneRecharge(ville)) {
-            	ville.setSourceVilleTrue();
-                parkings.add(new Parking(ville));
-
-                if (respecteContrainte(ville)) {
-                    System.out.println("Zone de recharge ajoutée à " + ville.getNom() + ".");
-
-                    // Iterate through connected cities and add recharge zones for them
-                    for (Route route : routes) {
-                        if (route.getVilleA().equals(ville) && !contientZoneRecharge(route.getVilleB())) {
-                            parkings.add(new Parking(route.getVilleB()));
-                            System.out.println("Zone de recharge ajoutée à " + route.getVilleB().getNom() + ".");
-                        } else if (route.getVilleB().equals(ville) && !contientZoneRecharge(route.getVilleA())) {
-                            parkings.add(new Parking(route.getVilleB()));
-                            System.out.println("Zone de recharge ajoutée à " + route.getVilleA().getNom() + ".");
-                        }
-                    }
-                } else {
-                    // Remove the added parking if it violates the constraint
-                    parkings.removeIf(parking -> parking.getVille().equals(ville));
-                    System.out.println("Impossible d'ajouter la zone de recharge à " + ville.getNom() +
-                            ". Cela violerait la contrainte d'accessibilité.");
-                }
-            } else {
-                System.out.println("Il y a déjà une zone de recharge dans " + ville.getNom() + ".");
-            }
-        } else {
-            System.out.println("Ville non trouvée. Veuillez réessayer.");
-        }
-    }
-
-    public void retirerZoneRechargeMenu(Scanner scanner) {
-        System.out.print("Veuillez entrer le nom de la ville où retirer une zone de recharge : ");
-        String nomVille = scanner.nextLine();
-
-        Ville ville = trouverVilleParNom(nomVille);
-
-        if (ville != null) {
-            if (contientZoneRecharge(ville) && peutRetirerZoneRecharge(ville) && ville.getSourceVille()){
-                retirerZoneRecharge(ville);
-                ville.setSourceVilleFalse();
-                
-                System.out.println("Zone de recharge retirée de " + ville.getNom() + ".");
-
-                for (Route route : routes) {
-                    if (route.getVilleA().equals(ville) || route.getVilleB().equals(ville)) {
-                        graph.removeEdge(route.getVilleA().getNom().name(), route.getVilleB().getNom().name());
-                    }
-                }
-            } else if (!contientZoneRecharge(ville)) {
-                System.out.println("Il n'y a pas de zone de recharge dans " + ville.getNom() + ".");
-            } else {
-                System.out.println("Impossible de retirer la zone de recharge de " + ville.getNom() +
-                        ". Cela violerait la contrainte d'accessibilité ou ce n'est pas la source de la recharge.");
-            }
-        } else {
-            System.out.println("Ville non trouvée. Veuillez réessayer.");
-        }
-    }
-
+   
     public void retirerZoneRecharge(Ville ville) {
+        System.out.println("Tentative de retrait de la zone de recharge de " + ville.getNom());
+        if (!peutRetirerZoneRecharge(ville)) {
+            System.out.println("Impossible de retirer la zone de recharge de " + ville.getNom() +
+                    ". Cela violerait la contrainte d'accessibilité.");
+            return;
+        }
 
-    	parkings.removeIf(parking -> parking.getVille().equals(ville));
+        parkings.removeIf(parking -> parking.getVille().equals(ville));
 
-        retirerZonesRechargeConnectees(ville);
+        if (!contientZoneRechargeConnectee(ville) && ville.getSourceVille()) {
+            ville.setSourceVilleFalse();
+        }
+        System.out.println("Zone de recharge retirée de " + ville.getNom() + ".");
     }
+
 
     public void retirerZonesRechargeConnectees(Ville ville) {
+        System.out.println("Tentative de retrait des zones de recharge connectées à " + ville.getNom());
+        List<Ville> villesConnectees = new ArrayList<>();
+
         for (Route route : routes) {
             if (route.getVilleA().equals(ville) && contientZoneRecharge(route.getVilleB()) && !route.getVilleB().getSourceVille()) {
-                parkings.removeIf(parking -> parking.getVille().equals(route.getVilleB()));
-            } else if (route.getVilleA().equals(ville) && contientZoneRecharge(route.getVilleA()) && !route.getVilleA().getSourceVille()) {
-                parkings.removeIf(parking -> parking.getVille().equals(route.getVilleA()));
+                villesConnectees.add(route.getVilleB());
+            } else if (route.getVilleB().equals(ville) && contientZoneRecharge(route.getVilleA()) && !route.getVilleA().getSourceVille()) {
+                villesConnectees.add(route.getVilleA());
             }
         }
+
+        for (Ville villeConnectee : villesConnectees) {
+            parkings.removeIf(parking -> parking.getVille().equals(villeConnectee));
+            System.out.println("Zone de recharge retirée de " + villeConnectee.getNom() + ".");
+        }
+        
+        System.out.println("Zones de recharge connectées retirées de " + ville.getNom() + ".");
     }
+
+
     
     public boolean peutRetirerZoneRecharge(Ville ville) {
         for (Route route : routes) {
@@ -387,5 +344,84 @@ public class CommunauteAgglomeration {
     public List<Parking> getParkings() {
         return parkings;
     }
+    public void ajouterZoneRechargeMenu(Scanner scanner) {
+        System.out.print("Veuillez entrer le nom de la ville où ajouter une zone de recharge : ");
+        String nomVille = scanner.nextLine();
+
+        Ville ville = trouverVilleParNom(nomVille);
+
+        if (ville != null) {
+            if (!contientZoneRecharge(ville)) {
+                ville.setSourceVilleTrue();
+                parkings.add(new Parking(ville));
+
+                ajusterZonesRechargeConnectees(ville);
+
+                if (respecteContrainte(ville)) {
+                    System.out.println("Zone de recharge ajoutée à " + ville.getNom() + ".");
+                } else {
+                    // Remove the added parking if it violates the constraint
+                    parkings.removeIf(parking -> parking.getVille().equals(ville));
+                    System.out.println("Impossible d'ajouter la zone de recharge à " + ville.getNom() +
+                            ". Cela violerait la contrainte d'accessibilité.");
+                }
+            } else {
+                System.out.println("Il y a déjà une zone de recharge dans " + ville.getNom() + ".");
+            }
+        } else {
+            System.out.println("Ville non trouvée. Veuillez réessayer.");
+        }
+    }
+
+    public void retirerZoneRechargeMenu(Scanner scanner) {
+        System.out.print("Veuillez entrer le nom de la ville où retirer une zone de recharge : ");
+        String nomVille = scanner.nextLine();
+
+        Ville ville = trouverVilleParNom(nomVille);
+
+        if (ville != null) {
+            if (contientZoneRecharge(ville) && peutRetirerZoneRecharge(ville) && ville.getSourceVille()) {
+                retirerZoneRecharge(ville);
+                ville.setSourceVilleFalse();
+
+                retirerZonesRechargeConnectees(ville);
+
+                System.out.println("Zone de recharge retirée de " + ville.getNom() + ".");
+            } else if (!contientZoneRecharge(ville)) {
+                System.out.println("Il n'y a pas de zone de recharge dans " + ville.getNom() + ".");
+            } else {
+                System.out.println("Impossible de retirer la zone de recharge de " + ville.getNom() +
+                        ". Cela violerait la contrainte d'accessibilité ou ce n'est pas la source de la recharge.");
+            }
+        } else {
+            System.out.println("Ville non trouvée. Veuillez réessayer.");
+        }
+    }
+
+    private void ajusterZonesRechargeConnectees(Ville ville) {
+        for (Route route : routes) {
+            if (route.getVilleA().equals(ville) && !contientZoneRecharge(route.getVilleB())) {
+                parkings.add(new Parking(route.getVilleB()));
+                System.out.println("Zone de recharge ajoutée à " + route.getVilleB().getNom() + ".");
+            } else if (route.getVilleB().equals(ville) && !contientZoneRecharge(route.getVilleA())) {
+                parkings.add(new Parking(route.getVilleA()));
+                System.out.println("Zone de recharge ajoutée à " + route.getVilleA().getNom() + ".");
+            }
+        }
+    }
+    
+    public boolean contientZoneRechargeConnectee(Ville ville) {
+        for (Route route : routes) {
+            if (route.getVilleA().equals(ville) && contientZoneRecharge(route.getVilleB())) {
+                return true;
+            } else if (route.getVilleB().equals(ville) && contientZoneRecharge(route.getVilleA())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
 
 }
