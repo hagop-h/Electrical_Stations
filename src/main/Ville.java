@@ -3,7 +3,7 @@ package main;
 import main.NomVille.Nom;
 
 public class Ville {
-    Nom nom;
+    private Nom nom;
     private boolean sourceVille=false;;
 
     public Ville(Nom nom2) {
@@ -18,5 +18,8 @@ public class Ville {
     }
     public boolean getSourceVille() {
     	return sourceVille;
+    }
+    public Nom getNom() {
+    	return nom;
     }
 }
