@@ -3,6 +3,7 @@ package main;
 
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CommunauteAgglomeration {
     private List<Ville> villes;
@@ -224,22 +225,46 @@ public class CommunauteAgglomeration {
         System.out.print("Votre choix : ");
     }
     
+ // Dans la classe CommunauteAgglomeration
     public void afficherVillesAvecOuSansRecharge() {
-        System.out.println("Villes avec zones de recharge :");
-        for (Parking parking : parkings) {
+        System.out.println("Villes avec zone de recharge (source) :");
+        for (Parking parking : getVillesAvecSourceRecharge()) {
+            System.out.println("- " + parking.getVille().getNom());
+        }
+
+        System.out.println("\nVilles rechargées sans source :");
+        for (Parking parking : getVillesRechargeesSansSource()) {
             System.out.println("- " + parking.getVille().getNom());
         }
 
         System.out.println("\nVilles sans zone de recharge :");
+        for (Ville ville : getVillesSansZoneRecharge()) {
+            System.out.println("- " + ville.getNom());
+        }
+    }
+    
+    public List<Parking> getVillesAvecSourceRecharge() {
+        return parkings.stream().filter(Parking::estSourceRecharge).collect(Collectors.toList());
+    }
+
+    public List<Parking> getVillesRechargeesSansSource() {
+        return parkings.stream().filter(parking -> !parking.estSourceRecharge()).collect(Collectors.toList());
+    }
+
+    public List<Ville> getVillesSansZoneRecharge() {
+        List<Ville> villesSansZoneRecharge = new ArrayList<>();
+
         for (Ville ville : villes) {
-            if (!contientZoneRecharge(ville)) {
-                System.out.println("- " + ville.getNom());
+            if (!contientZoneRecharge(ville) && !ville.getSourceVille()) {
+                villesSansZoneRecharge.add(ville);
             }
         }
+
+        return villesSansZoneRecharge;
     }
 
 
-   
+
     public void retirerZoneRecharge(Ville ville) {
         System.out.println("Tentative de retrait de la zone de recharge de " + ville.getNom());
         if (!peutRetirerZoneRecharge(ville)) {
@@ -248,12 +273,28 @@ public class CommunauteAgglomeration {
             return;
         }
 
-        parkings.removeIf(parking -> parking.getVille().equals(ville));
-
-        if (!contientZoneRechargeConnectee(ville) && ville.getSourceVille()) {
-            ville.setSourceVilleFalse();
+        // Check if any connected city has a source, if yes, A remains in parkings
+        boolean connectedCityHasSource = false;
+        for (Route route : routes) {
+            if (route.getVilleA().equals(ville) && contientZoneRecharge(route.getVilleB()) && route.getVilleB().getSourceVille()) {
+                connectedCityHasSource = true;
+                break;
+            } else if (route.getVilleB().equals(ville) && contientZoneRecharge(route.getVilleA()) && route.getVilleA().getSourceVille()) {
+                connectedCityHasSource = true;
+                break;
+            }
         }
-        System.out.println("Zone de recharge retirée de " + ville.getNom() + ".");
+
+        if (!connectedCityHasSource) {
+            parkings.removeIf(parking -> parking.getVille().equals(ville));
+
+            if (!contientZoneRechargeConnectee(ville) && ville.getSourceVille()) {
+                ville.setSourceVilleFalse();
+            }
+            System.out.println("Zone de recharge retirée de " + ville.getNom() + ".");
+        } else {
+            System.out.println("La zone de recharge de " + ville.getNom() + " ne peut pas être retirée car une ville connectée a encore une source.");
+        }
     }
 
 
@@ -270,12 +311,13 @@ public class CommunauteAgglomeration {
         }
 
         for (Ville villeConnectee : villesConnectees) {
-            parkings.removeIf(parking -> parking.getVille().equals(villeConnectee));
+            retirerZoneRecharge(villeConnectee);
             System.out.println("Zone de recharge retirée de " + villeConnectee.getNom() + ".");
         }
-        
+
         System.out.println("Zones de recharge connectées retirées de " + ville.getNom() + ".");
     }
+
 
 
     

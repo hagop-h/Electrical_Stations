@@ -10,4 +10,8 @@ public class Parking {
     public Ville getVille() {
     	return ville;
     }
+    
+    public boolean estSourceRecharge() {
+        return ville.getSourceVille();
+    }
 }

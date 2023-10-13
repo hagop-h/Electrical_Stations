@@ -1,5 +1,6 @@
 package main;
 
+
 import main.NomVille.Nom;
 
 public class Ville {
@@ -19,7 +20,18 @@ public class Ville {
     public boolean getSourceVille() {
     	return sourceVille;
     }
+    
+    
     public Nom getNom() {
     	return nom;
     }
+
+    @Override
+    public String toString() {
+        return "Ville{" +
+                "nom=" + nom +
+                ", sourceVille=" + sourceVille +
+                '}';
+    }
+
 }
