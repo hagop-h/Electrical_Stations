@@ -1,0 +1,17 @@
+package main2;
+
+public class Parking {
+    private Ville ville;
+    
+    public Parking(Ville ville) {
+        this.ville = ville;
+    }
+   
+    public Ville getVille() {
+    	return ville;
+    }
+    
+    public boolean estSourceRecharge() {
+        return ville.getSourceVille();
+    }
+}
