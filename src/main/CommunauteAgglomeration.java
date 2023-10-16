@@ -5,12 +5,14 @@ package main;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import main2.Charger;
+
 public class CommunauteAgglomeration {
     private List<Ville> villes;
     private List<Route> routes;
     private List<Parking> parkings;
     private Graph graph; // graph pour representer les relations
-
+ 
     public CommunauteAgglomeration() {
         villes = new ArrayList<>();
         routes = new ArrayList<>();
@@ -248,9 +250,11 @@ public class CommunauteAgglomeration {
 	    Ville ville = trouverVilleParNom(nomVille);
 	
 	    if (ville != null) {
-	        if (!contientZoneRecharge(ville)) {
+	        if (!ville.getSourceVille() ) {
 	            ville.setSourceVilleTrue();
-	            parkings.add(new Parking(ville));
+	            if(!contientZoneRecharge(ville)) {
+	            	parkings.add(new Parking(ville));
+	            }
 	
 	            ajusterZonesRechargeConnectees(ville);
 	
