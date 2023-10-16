@@ -15,6 +15,7 @@ class Graph {
     public void addEdge(String vertex1, String vertex2) {
         adjacencyList.get(vertex1).add(vertex2);
         adjacencyList.get(vertex2).add(vertex1);
+        
     }
 
     public Set<String> getNeighbors(String vertex) {

@@ -1,9 +1,9 @@
 package main2;
 
-public class Parking {
+public class Charger {
     private Ville ville;
     
-    public Parking(Ville ville) {
+    public Charger(Ville ville) {
         this.ville = ville;
     }
    
@@ -12,6 +12,6 @@ public class Parking {
     }
     
     public boolean estSourceRecharge() {
-        return ville.getSourceVille();
+        return ville.getzoneDeRecharge();
     }
 }

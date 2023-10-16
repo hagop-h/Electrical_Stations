@@ -3,20 +3,20 @@ package main2;
 
 public class Ville {
     private String nom;
-    private boolean sourceVille=false;;
+    private boolean zoneDeRecharge=false;;
     
     public Ville(String nom2) {
         this.nom = nom2;
     }
     
-    public void setSourceVilleTrue() {
-    	sourceVille=true;
+    public void setzoneDeRechargeTrue() {
+    	zoneDeRecharge=true;
     }
-    public void setSourceVilleFalse() {
-    	sourceVille=false;
+    public void setzoneDeRechargeFalse() {
+    	zoneDeRecharge=false;
     }
-    public boolean getSourceVille() {
-    	return sourceVille;
+    public boolean getzoneDeRecharge() {
+    	return zoneDeRecharge;
     }
     
     
@@ -28,7 +28,7 @@ public class Ville {
     public String toString() {
         return "Ville{" +
                 "nom=" + nom +
-                ", sourceVille=" + sourceVille +
+                ", zoneDeRecharge=" + zoneDeRecharge +
                 '}';
     }
 

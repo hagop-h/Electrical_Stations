@@ -12,7 +12,7 @@ public class Main {
             
         } else {
             cheminFichier = args[0];
-        }
+        } 
 
         CommunauteAgglomeration communaute = new CommunauteAgglomeration();
 
@@ -23,6 +23,9 @@ public class Main {
         int choixMenu;
 
         do {
+            
+            System.out.println("score: "+communaute.score());
+            communaute.afficherVillesAvecOuSansRecharge();
             afficherMenuPrincipal();
             choixMenu = lireEntier(scanner);
 
@@ -58,6 +61,7 @@ public class Main {
     // Autres méthodes restent inchangées
 
     public static void afficherMenuPrincipal() {
+    	
         System.out.println("\nMenu :");
         System.out.println("1) Résoudre manuellement");
         System.out.println("2) Résoudre automatiquement");
