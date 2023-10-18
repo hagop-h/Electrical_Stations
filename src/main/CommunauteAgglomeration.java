@@ -5,8 +5,6 @@ package main;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import main2.Charger;
-
 public class CommunauteAgglomeration {
     private List<Ville> villes;
     private List<Route> routes;
