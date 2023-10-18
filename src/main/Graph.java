@@ -2,6 +2,7 @@ package main;
 import java.util.*;
 
 class Graph {
+
     private Map<String, Set<String>> adjacencyList;
 
     public Graph() {
@@ -29,5 +30,5 @@ class Graph {
         adjacencyList.get(vertex1).remove(vertex2);
         adjacencyList.get(vertex2).remove(vertex1);
     }
-}
 
+}

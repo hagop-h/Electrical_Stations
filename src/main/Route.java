@@ -1,6 +1,7 @@
 package main;
 
 public class Route {
+
     private Ville villeA;
     private Ville villeB;
 
@@ -16,4 +17,5 @@ public class Route {
     public Ville getVilleB() {
     	return villeB;
     }
+
 }

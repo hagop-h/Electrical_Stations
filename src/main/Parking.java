@@ -1,6 +1,7 @@
 package main;
 
 public class Parking {
+
     private Ville ville;
     
     public Parking(Ville ville) {
@@ -14,4 +15,5 @@ public class Parking {
     public boolean estSourceRecharge() {
         return ville.getSourceVille();
     }
+
 }
