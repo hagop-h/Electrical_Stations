@@ -463,6 +463,7 @@ public class CommunauteAgglomeration {
 	    }
 	
 	}
+	
 
 
 	public void resoudreAutomatiquementAlgo2(int k) {
