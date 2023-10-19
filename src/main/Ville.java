@@ -6,7 +6,7 @@ import main.NomVille.Nom;
 public class Ville {
 
     private Nom nom;
-    private boolean sourceVille = false;;
+    private boolean sourceVille = false;
 
     public Ville(Nom nom2) {
         this.nom = nom2;

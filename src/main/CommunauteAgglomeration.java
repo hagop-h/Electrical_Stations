@@ -77,29 +77,6 @@ public class CommunauteAgglomeration {
         return villes.stream().filter(ville -> ville.getNom().name().equalsIgnoreCase(nom)).findFirst().orElse(null);
     }
 
-    public void trouverSolutionManuelle() {
-        Scanner scanner = new Scanner(System.in);
-        int choixMenu;
-        do {
-            afficherVillesAvecRecharge();
-            afficherMenuSolutionManuelle();
-            choixMenu = lireEntier(scanner);
-            switch (choixMenu) {
-                case 1:
-                    ajouterZoneRechargeMenu(scanner);
-                    break;
-                case 2:
-                    retirerZoneRechargeMenu(scanner);
-                    break;
-                case 3:
-                    System.out.println("Fin de la gestion manuelle.");
-                    break;
-                default:
-                    System.out.println("Choix invalide. Veuillez réessayer.");
-            }
-        } while (choixMenu != 3);
-    }
-
     public void gererMenuZonesRecharge() {
         Scanner scanner = new Scanner(System.in);
         int choixMenu;
@@ -143,10 +120,10 @@ public class CommunauteAgglomeration {
 	    for (Route route : routes) {
 	        if (route.getVilleA().equals(ville) && !contientZoneRecharge(route.getVilleB())) {
 	            parkings.add(new Parking(route.getVilleB()));
-	            System.out.println("Zone de recharge ajoutée à " + route.getVilleB().getNom() + ".");
+	            System.out.println(route.getVilleB().getNom() + "est dans la zone de recharge.");
 	        } else if (route.getVilleB().equals(ville) && !contientZoneRecharge(route.getVilleA())) {
 	            parkings.add(new Parking(route.getVilleA()));
-	            System.out.println("Zone de recharge ajoutée à " + route.getVilleA().getNom() + ".");
+	            System.out.println(route.getVilleA().getNom() + "est dans la zone de recharge.");
 	        }
 	    }
 	}
@@ -159,16 +136,8 @@ public class CommunauteAgglomeration {
 	}
 
 	public void afficherVillesAvecRecharge() {
-        System.out.println("Villes qui sont recharge avec ou sans zone :");
+        System.out.println("Villes qui sont dans la zone de recharge :");
         parkings.forEach(parking -> System.out.println("- " + parking.getVille().getNom()));
-    }
-
-    public void afficherMenuSolutionManuelle() {
-        System.out.println("\nMenu :");
-        System.out.println("1) Ajouter une zone de recharge");
-        System.out.println("2) Retirer une zone de recharge");
-        System.out.println("3) Fin");
-        System.out.print("Votre choix : ");
     }
 
     public void afficherMenuZonesRecharge() {
@@ -307,9 +276,9 @@ public class CommunauteAgglomeration {
         }
         for (Ville villeConnectee : villesConnectees) {
             retirerZoneRecharge(villeConnectee);
-            System.out.println("Zone de recharge retirée de " + villeConnectee.getNom() + ".");
+            System.out.println(villeConnectee.getNom() + "a été retirée de la zone de recharge.");
         }
-        System.out.println("Zones de recharge connectées retirées de " + ville.getNom() + ".");
+        System.out.println(ville.getNom() + "a été retirée de la zone de recharge.");
     }
 
     public void retirerZoneRechargeMenu(Scanner scanner) {
@@ -325,7 +294,7 @@ public class CommunauteAgglomeration {
 	        } else if (!contientZoneRecharge(ville)) {
 	            System.out.println("Il n'y a pas de zone de recharge dans " + ville.getNom() + ".");
 	        } else {
-	            System.out.println("Impossible de retirer la zone de recharge de " + ville.getNom() + ". Cela violerait la contrainte d'accessibilité ou peut-être elle n'est pas la bonne zone de la recharge.");
+	            System.out.println("Impossible de retirer la zone de recharge de " + ville.getNom() + ". Cela violerait la contrainte d'accessibilité.");
 	        }
 	    } else {
 	        System.out.println("Ville non trouvée. Veuillez réessayer.");
@@ -352,20 +321,12 @@ public class CommunauteAgglomeration {
     
     public boolean respecteContrainte(Ville ville) {
         if (!contientZoneRecharge(ville)) {
-            // La ville doit avoir ses bornes ou être reliée à une ville avec des bornes
             return false;
         }
         for (Route route : routes) {
-            if (route.getVilleA().equals(ville)) {
-                // Si la route va vers la villeA, vérifie que la villeB a des bornes ou est reliée à une ville avec des bornes
-                if (!contientZoneRecharge(route.getVilleB()) && !estRelieeAvecBorne(route.getVilleB())) {
-                    return false;
-                }
-            } else if (route.getVilleB().equals(ville)) {
-                // Si la route va vers la villeB, vérifie que la villeA a des bornes ou est reliée à une ville avec des bornes
-                if (!contientZoneRecharge(route.getVilleA()) && !estRelieeAvecBorne(route.getVilleA())) {
-                    return false;
-                }
+            Ville autreVille = route.getVilleA().equals(ville) ? route.getVilleB() : route.getVilleA();
+            if (!contientZoneRecharge(autreVille) && !estRelieeAvecBorne(autreVille)) {
+                return false;
             }
         }
         return true;
@@ -384,17 +345,15 @@ public class CommunauteAgglomeration {
     }
 
     public boolean contientZoneRechargeConnectee(Ville ville) {
-	    for (Route route : routes) {
-	        if (route.getVilleA().equals(ville) && contientZoneRecharge(route.getVilleB())) {
-	            return true;
-	        } else if (route.getVilleB().equals(ville) && contientZoneRecharge(route.getVilleA())) {
-	            return true;
-	        }
-	    }
-	    return false;
-	}
+        for (Route route : routes) {
+            if ((route.getVilleA().equals(ville) || route.getVilleB().equals(ville)) && (contientZoneRecharge(route.getVilleA()) || contientZoneRecharge(route.getVilleB()))) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	// Pour les tests unitaires
+    // Pour les tests unitaires
     public List<Ville> getVilles() {
         return villes;
     }
