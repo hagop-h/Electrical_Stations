@@ -464,8 +464,44 @@ public class CommunauteAgglomeration {
 	
 	}
 	
+	public Ville choisirVilleAleatoire() {
+	    List<Ville> villeList = new ArrayList<>(villes);
+	    return villeList.get(ThreadLocalRandom.current().nextInt(villeList.size()));
+	}
 
 
+
+	public void resoudreAutomatiquementAlgo2(int k) {
+	    int i = 0;
+	    int scoreCourant = score();
+	    
+	    while (i < k) {
+	        Ville ville = choisirVilleAleatoire();
+	        // Sauvegarde l'état actuel
+	        boolean etatInitial = ville.getzoneDeRecharge();
+
+	        if (ville.getzoneDeRecharge()) {
+	            retirerZoneRecharge(ville);
+	        } else {
+	            recharge(ville.getNom());
+	        }
+	        
+	        int nouveauScore = score();
+	        if (nouveauScore < scoreCourant) {
+	            i = 0;
+	            scoreCourant = nouveauScore;
+	        } else {
+	            // Annule la dernière modification
+	            ville.setzoneDeRecharge(etatInitial);
+	            i++;
+	        }
+	    }
+
+	    mettreAJourVillesAvecRecharge();
+	}
+	
+
+	/*
 	public void resoudreAutomatiquementAlgo2(int k) {
 	    int i = 0;
 	    int scoreCourant = score();
@@ -491,7 +527,7 @@ public class CommunauteAgglomeration {
 	
 	    mettreAJourVillesAvecRecharge();
 	}
-
+	*/
 
 	public boolean estRelieeAvecBorne(Ville ville) {
 	    for (Route route : routes) {
