@@ -36,7 +36,7 @@ public class CommunauteAgglomeration {
         System.out.print("Veuillez entrer le nombre de villes (inférieur à 26) : ");
         int nombreVilles = lireEntier(scanner);
         for (int i = 0; i < nombreVilles; i++) {
-            ajouterVille(new Ville(NomVille.Nom.values()[i]));
+            ajouterVille(new Ville(NomVille.values()[i]));
         }
         System.out.println("Villes disponibles pour manipulation :");
         for (Ville ville : villes) {

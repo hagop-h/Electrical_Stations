@@ -3,10 +3,10 @@ package main;
 
 public class Ville {
 
-    private Nom nom;
+    private NomVille nom;
     private boolean sourceVille = false;
 
-    public Ville(Nom nom2) {
+    public Ville(NomVille nom2) {
         this.nom = nom2;
     }
     
@@ -22,7 +22,7 @@ public class Ville {
     	return sourceVille;
     }
     
-    public Nom getNom() {
+    public NomVille getNom() {
     	return nom;
     }
 
