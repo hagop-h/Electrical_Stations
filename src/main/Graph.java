@@ -1,7 +1,7 @@
 package main;
 import java.util.*;
 
-class Graph {
+public class Graph {
 
     private Map<String, Set<String>> adjacencyList;
 

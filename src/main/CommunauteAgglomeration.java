@@ -1,7 +1,7 @@
 package main;
 
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.stream.*;
 
 public class CommunauteAgglomeration {
 

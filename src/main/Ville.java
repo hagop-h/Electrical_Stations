@@ -1,8 +1,6 @@
 package main;
 
 
-import main.NomVille.Nom;
-
 public class Ville {
 
     private Nom nom;
