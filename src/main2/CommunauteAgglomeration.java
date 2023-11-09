@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class CommunauteAgglomeration {
     private Set<Ville> villes;
     private Set<Route> routes; 
-    private List<Charger> charger;
+    private List<Charger> charger; // ville charger avec ou sans zone de rechagre
     private Graph graph; // graph pour representer les relations
 
     public CommunauteAgglomeration() {
@@ -55,7 +55,7 @@ public class CommunauteAgglomeration {
         	genererSolutionInitiale();
         }
         do {
-        	System.out.println("Score :"+score());
+        	System.out.println("\nScore :"+score()+"\n");
         	
             afficherVillesAvecOuSansRecharge();
             afficherMenuSolutionManuelle();
@@ -76,21 +76,6 @@ public class CommunauteAgglomeration {
         } while (choixMenu != 3);
     }
 
-    
-    public void mettreAJourVillesAvecRecharge() {
-        List<Ville> newRechargeCities = new ArrayList<>();
-
-        for (Ville ville : villes) {
-            if (!contientZoneRecharge(ville) && ville.getzoneDeRecharge()) {
-                newRechargeCities.add(ville);
-            }
-        }
-
-        for (Ville newRechargeCity : newRechargeCities) {
-            charger.add(new Charger(newRechargeCity));
-        }
-    }
- 
 
 	private void ajouterRoute(String nomVilleA, String nomVilleB) {
 	    Ville villeA = trouverVilleParNom(nomVilleA);
@@ -114,15 +99,6 @@ public class CommunauteAgglomeration {
 	    }
 	}
 
-	public void afficherMenuPrincipal() {
-	    System.out.println("\nMenu :");
-	    System.out.println("1) Ajouter une route");
-	    System.out.println("2) Fin");
-	    System.out.print("Votre choix : ");
-	}
-
-
-
     public void afficherMenuSolutionManuelle() {
         System.out.println("\nMenu :");
         System.out.println("1) Ajouter une zone de recharge");
@@ -133,17 +109,17 @@ public class CommunauteAgglomeration {
 
     
     public void afficherVillesAvecOuSansRecharge() {
-        System.out.println("Villes avec un zone de recharge :");
+        System.out.println("Villes rechargées avec un zone de recharge :");
         for (Charger charger : getVillesAvecSourceRecharge()) {
             System.out.println("- " + charger.getVille().getNom());
         }
 
-        System.out.println("\nVilles dans la zone de recharge :");
+        System.out.println("\nVilles rechargées sans la zone de recharge :");
         for (Charger charger : getVillesRechargeesSansSource()) {
             System.out.println("- " + charger.getVille().getNom());
         }
 
-        System.out.println("\nVilles sans zone de recharge :");
+        System.out.println("\nVilles non rechargées :");
         for (Ville ville : getVillesSansZoneRecharge()) {
             System.out.println("- " + ville.getNom());
         }
@@ -179,7 +155,7 @@ public class CommunauteAgglomeration {
 	            writer.newLine();
 	        }
 	
-	        writer.write("Villes avec zone de recharge (source) :");
+	        writer.write("Villes avec zone de recharge et rechargées :");
 	        writer.newLine();
 	
 	        for (Charger charger : getVillesAvecSourceRecharge()) {
@@ -188,7 +164,7 @@ public class CommunauteAgglomeration {
 	
 	        }
 	
-	        writer.write("\nVilles rechargées sans source :");
+	        writer.write("\nVilles rechargées :");
 	        writer.newLine();
 	
 	        for (Charger charger : getVillesRechargeesSansSource()) {
@@ -236,7 +212,7 @@ public class CommunauteAgglomeration {
 
 
     public void ajouterZoneRechargeMenu(Scanner scanner) {
-	    System.out.print("Veuillez entrer le nom de la ville où ajouter une zone de recharge : ");
+	    System.out.print("\nVeuillez entrer le nom de la ville où ajouter une zone de recharge : ");
 	    String nomVille = scanner.nextLine();
 	
 	    Ville ville = trouverVilleParNom(nomVille);
@@ -276,7 +252,6 @@ public class CommunauteAgglomeration {
 	            	charger.add(new Charger(ville));
 	            }
 	            ajusterZonesRechargeConnectees(ville);
-	
 	            if (respecteContrainte(ville)) {
 	                System.out.println("Zone de recharge ajoutée à " + ville.getNom() + ".");
 	            } else {
@@ -328,7 +303,7 @@ public class CommunauteAgglomeration {
 
 
     public void retirerZoneRechargeMenu(Scanner scanner) {
-	    System.out.print("Veuillez entrer le nom de la ville où retirer une zone de recharge : ");
+	    System.out.print("\nVeuillez entrer le nom de la ville où retirer une zone de recharge : ");
 	    String nomVille = scanner.nextLine();
 	
 	    Ville ville = trouverVilleParNom(nomVille);
@@ -424,7 +399,7 @@ public class CommunauteAgglomeration {
 	            }
 	        }
 	        
-	        System.out.println("Communauté chargée depuis le fichier : " + cheminFichier);
+	        System.out.println("Communauté chargée depuis le fichier : " + cheminFichier + "\n");
 	    } catch (FileNotFoundException e) {
 	        System.err.println("Fichier non trouvé : " + cheminFichier);
 	    }
@@ -471,63 +446,31 @@ public class CommunauteAgglomeration {
 
 
 
+
 	public void resoudreAutomatiquementAlgo2(int k) {
 	    int i = 0;
-	    int scoreCourant = score();
+	    int scoreCourant = score();	    
 	    
 	    while (i < k) {
 	        Ville ville = choisirVilleAleatoire();
 	        // Sauvegarde l'état actuel
-	        boolean etatInitial = ville.getzoneDeRecharge();
-
-	        if (ville.getzoneDeRecharge()) {
-	            retirerZoneRecharge(ville);
-	        } else {
+	        if (!ville.getzoneDeRecharge()) {
 	            recharge(ville.getNom());
 	        }
-	        
+
 	        int nouveauScore = score();
-	        if (nouveauScore < scoreCourant) {
+	        if (nouveauScore <= scoreCourant) {
 	            i = 0;
 	            scoreCourant = nouveauScore;
-	        } else {
-	            // Annule la dernière modification
-	            ville.setzoneDeRecharge(etatInitial);
-	            i++;
+	        }
+	        else {
+	        	i++;
 	        }
 	    }
-
-	    mettreAJourVillesAvecRecharge();
+	    //mettreAJourVillesAvecRecharge();
 	}
-	
 
-	/*
-	public void resoudreAutomatiquementAlgo2(int k) {
-	    int i = 0;
-	    int scoreCourant = score();
-	
-	    while (i < k) {
-	        List<Ville> villeList = villes.stream().collect(Collectors.toList());
-	    	Ville ville = villeList.get(ThreadLocalRandom.current().nextInt(villes.size()));
-	
-	        if (ville.getzoneDeRecharge()) {
-	        	retirerZoneRecharge(ville);
-	        } else {
-	            recharge(ville.getNom());
-	        }
-	
-	        int nouveauScore = score();
-	        if (nouveauScore < scoreCourant) {
-	            i = 0;
-	            scoreCourant = nouveauScore;
-	        } else {
-	            i++;
-	        }
-	    }
-	
-	    mettreAJourVillesAvecRecharge();
-	}
-	*/
+
 
 	public boolean estRelieeAvecBorne(Ville ville) {
 	    for (Route route : routes) {

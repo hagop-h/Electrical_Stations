@@ -24,7 +24,7 @@ public class Main {
 
         do {
             
-            System.out.println("score: "+communaute.score());
+            System.out.println("Score: "+communaute.score());
             communaute.afficherVillesAvecOuSansRecharge();
             afficherMenuPrincipal();
             choixMenu = lireEntier(scanner);
