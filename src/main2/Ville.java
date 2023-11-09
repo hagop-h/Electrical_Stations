@@ -32,4 +32,8 @@ public class Ville {
                 '}';
     }
 
+	public void setzoneDeRecharge(boolean etatInitial) {
+		zoneDeRecharge=etatInitial;
+	}
+
 }
