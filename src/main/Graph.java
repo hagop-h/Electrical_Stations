@@ -3,10 +3,11 @@ import java.util.*;
 
 public class Graph {
 
-    private Map<String, Set<String>> adjacencyList;
+    private Map<String, Set<String>> adjacencyList; // Représenter le graphe sous forme de liste d'adjacence
 
     public Graph() {
-        adjacencyList = new HashMap<>();
+        adjacencyList = new HashMap<>(); // Initialiser le graphe en créant une liste d'adjacence vide
+
     }
 
     public void addVertex(String vertex) {
@@ -25,7 +26,7 @@ public class Graph {
     public Set<String> getVertices() {
         return adjacencyList.keySet();
     }
-    
+
     public void removeEdge(String vertex1, String vertex2) {
         adjacencyList.get(vertex1).remove(vertex2);
         adjacencyList.get(vertex2).remove(vertex1);

@@ -3,11 +3,11 @@ package main;
 
 public class Ville {
 
-    private NomVille nom;
-    private boolean sourceVille = false;
+    private NomVille nom; // Le nom de la ville
+    private boolean sourceVille = false; // Indiquer si la ville est une source de recharge ou non
 
     public Ville(NomVille nom2) {
-        this.nom = nom2;
+        this.nom = nom2; // Initialiser la ville avec un nom spécifié
     }
     
     public void setSourceVilleTrue() {
