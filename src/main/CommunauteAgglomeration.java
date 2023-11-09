@@ -136,11 +136,9 @@ public class CommunauteAgglomeration {
             // Vérifier si la ville de départ (VilleA) est égale à la ville spécifiée et si la ville d'arrivée (VilleB) n'a pas de zone de recharge
             if (route.getVilleA().equals(ville) && !contientZoneRecharge(route.getVilleB())) {
 	            parkings.add(new Parking(route.getVilleB()));
-	            System.out.println(route.getVilleB().getNom() + "est dans la zone de recharge.");
             // Vérifier si la ville d'arrivée (VilleB) est égale à la ville spécifiée et si la ville de départ (VilleA) n'a pas de zone de recharge
             } else if (route.getVilleB().equals(ville) && !contientZoneRecharge(route.getVilleA())) {
 	            parkings.add(new Parking(route.getVilleA()));
-	            System.out.println(route.getVilleA().getNom() + "est dans la zone de recharge.");
 	        }
 	    }
 	}
@@ -274,7 +272,6 @@ public class CommunauteAgglomeration {
 	}
 
 	public void retirerZoneRecharge(Ville ville) {
-        System.out.println("Tentative de retrait de la zone de recharge de " + ville.getNom());
         // Vérifier si le retrait de la zone de recharge de la ville violerait la contrainte d'accessibilité
         if (!peutRetirerZoneRecharge(ville)) {
             System.out.println("Impossible de retirer la zone de recharge de " + ville.getNom() + ". Cela violerait la contrainte d'accessibilité.");
@@ -298,14 +295,11 @@ public class CommunauteAgglomeration {
             if (!contientZoneRechargeConnectee(ville) && ville.getSourceVille()) {
                 ville.setSourceVilleFalse();
             }
-            System.out.println("Zone de recharge retirée de " + ville.getNom() + ".");
-        } else {
-            System.out.println("La zone de recharge de " + ville.getNom() + " ne peut pas être retirée car une ville connectée a encore une source.");
-        }
+            //System.out.println("Zone de recharge retirée de " + ville.getNom() + ".");
+        } 
     }
 
     public void retirerZonesRechargeConnectees(Ville ville) {
-        System.out.println("Tentative de retrait des zones de recharge connectées à " + ville.getNom());
         List<Ville> villesConnectees = new ArrayList<>(); // Une liste pour stocker les villes connectées avec des zones de recharge et qui ne sont pas des sources
         // Parcourir les routes pour trouver les villes connectées avec des zones de recharge et qui ne sont pas des sources
         for (Route route : routes) {
@@ -318,9 +312,7 @@ public class CommunauteAgglomeration {
         // Parcourir la liste des villes connectées pour retirer leurs zones de recharge
         for (Ville villeConnectee : villesConnectees) {
             retirerZoneRecharge(villeConnectee);
-            System.out.println(villeConnectee.getNom() + " a été retirée de la zone de recharge.");
         }
-        System.out.println(ville.getNom() + " a été retirée de la zone de recharge.");
     }
 
     public void retirerZoneRechargeMenu(Scanner scanner) {
