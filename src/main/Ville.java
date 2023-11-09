@@ -11,11 +11,11 @@ public class Ville {
     }
     
     public void setSourceVilleTrue() {
-    	sourceVille=true;
+    	sourceVille = true;
     }
 
     public void setSourceVilleFalse() {
-    	sourceVille=false;
+    	sourceVille = false;
     }
 
     public boolean getSourceVille() {
