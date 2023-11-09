@@ -143,7 +143,7 @@ public class CommunauteAgglomeration {
 
 	// Modifier la méthode sauvegarderSolution pour inclure les routes
 	public void sauvegarderSolution(String cheminFichier) {
-	    try (BufferedWriter writer = new BufferedWriter(new FileWriter(cheminFichier))) {
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(cheminFichier))) {
 	        for (Ville ville : villes) {
 	        	
 	            writer.write(ville.getNom() + " " + ville.getzoneDeRecharge());
@@ -155,7 +155,7 @@ public class CommunauteAgglomeration {
 	            writer.newLine();
 	        }
 	
-	        writer.write("Villes avec zone de recharge et rechargées :");
+	        writer.write("\nVilles avec zone de recharge et rechargées :");
 	        writer.newLine();
 	
 	        for (Charger charger : getVillesAvecSourceRecharge()) {
@@ -169,6 +169,7 @@ public class CommunauteAgglomeration {
 	
 	        for (Charger charger : getVillesRechargeesSansSource()) {
 	        	writer.write("- " + charger.getVille().getNom());
+	        	writer.newLine();
 	        }
 	
 	        writer.write("\nVilles sans zone de recharge :");
@@ -179,7 +180,7 @@ public class CommunauteAgglomeration {
 	            writer.newLine();
 	
 	        }
-	        writer.write("SCORE : "+ score());
+	        writer.write("\nSCORE : "+ score());
 	        writer.newLine();
 	        System.out.println("Solution sauvegardée dans : " + cheminFichier);
 	    } catch (IOException e) {
