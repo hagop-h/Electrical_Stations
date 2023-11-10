@@ -141,7 +141,6 @@ public class CommunauteAgglomeration {
 	}
 
 
-	// Modifier la méthode sauvegarderSolution pour inclure les routes
 	public void sauvegarderSolution(String cheminFichier) {
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(cheminFichier))) {
 	        for (Ville ville : villes) {
@@ -229,7 +228,6 @@ public class CommunauteAgglomeration {
 	            if (respecteContrainte(ville)) {
 	                System.out.println("Zone de recharge ajoutée à " + ville.getNom() + ".");
 	            } else {
-	                // Remove the added parking if it violates the constraint
 	                charger.removeIf(parking -> parking.getVille().equals(ville));
 	                System.out.println("Impossible d'ajouter la zone de recharge à " + ville.getNom() +
 	                        ". Cela violerait la contrainte d'accessibilité.");
@@ -508,7 +506,7 @@ public class CommunauteAgglomeration {
 	}
 
 
-	// Ajouter la méthode score pour calculer le score actuel
+	// Pour calculer le score actuel
     public int score() {
         return (int) charger.stream().filter(Charger::estSourceRecharge).count();
     }
