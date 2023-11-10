@@ -1,67 +1,76 @@
 package main2;
+
 import java.util.Scanner;
 
+/**
+ * Classe principale contenant la méthode main pour exécuter le programme de gestion de la communauté d'agglomération.
+ */
 public class Main {
+    /**
+     * Méthode principale exécutant le programme.
+     *
+     * @param args Les arguments en ligne de commande (le chemin du fichier peut être fourni en argument).
+     */
     public static void main(String[] args) {
-        String cheminFichier = "";
-        Scanner scanner = new Scanner(System.in);
+        String cheminFichier = ""; // Déclaration et initialisation d'une variable pour stocker le chemin du fichier
+        Scanner scanner = new Scanner(System.in); // Création d'une instance de Scanner pour lire l'entrée utilisateur
 
+        // Vérifier si un chemin de fichier est fourni en argument
         if (args.length != 1) {
+            // Si aucun argument n'est fourni, demander à l'utilisateur d'entrer le chemin du fichier via la console
             System.out.print("Veuillez entrer le chemin du fichier : ");
+            // Lire le chemin du fichier depuis la console
             cheminFichier = scanner.nextLine();
-            
         } else {
+            // Si un argument est fourni, utiliser le premier argument comme chemin de fichier
             cheminFichier = args[0];
         } 
 
-        CommunauteAgglomeration communaute = new CommunauteAgglomeration();
+        CommunauteAgglomeration communaute = new CommunauteAgglomeration(); // Créer une instance de la classe CommunauteAgglomeration
 
-        // Charger la communauté depuis le fichier
-        communaute.chargerCommunaute(cheminFichier);
+        communaute.chargerCommunaute(cheminFichier); // Charger la communauté à partir du fichier spécifié
 
-        // Menu principal
         int choixMenu;
 
         do {
-            
+            // Afficher le score actuel et les informations sur les zones de recharge
             System.out.println("Score: "+communaute.score());
             communaute.afficherVillesAvecOuSansRecharge();
             afficherMenuPrincipal();
             choixMenu = lireEntier(scanner);
-
+            // Exécuter l'action en fonction du choix de l'utilisateur
             switch (choixMenu) {
                 case 1:
-                    // Option 1 : résoudre manuellement
+                    // Option 1 : Résoudre manuellement
                     communaute.trouverSolutionManuelle();
                     break;
                 case 2:
-                    // Option 2 : résoudre automatiquement avec Algorithme 2
+                    // Option 2 : Résoudre automatiquement avec l'Algorithme 2
                     System.out.print("Veuillez entrer le nombre d'itérations : ");
                     int nombreIterations = lireEntier(scanner);
                     communaute.resoudreAutomatiquementAlgo2(nombreIterations);
                     break;
                 case 3:
-                    // Option 3 : sauvegarder
+                    // Option 3 : Sauvegarder
                     System.out.print("Veuillez entrer le chemin vers le fichier de sauvegarde : ");
                     String cheminSauvegarde = scanner.nextLine();
                     communaute.sauvegarderSolution(cheminSauvegarde);
                     break;
                 case 4:
-                    // Option 4 : fin
+                    // Option 4 : Fin
                     System.out.println("Fin du programme.");
                     break;
                 default:
                     System.out.println("Choix invalide. Veuillez réessayer.");
             }
-        } while (choixMenu != 4);
-
-        scanner.close();
+        } while (choixMenu != 4); // Continuer jusqu'à ce que l'utilisateur choisisse de quitter
+        scanner.close(); // Fermer le flux
     }
 
-    // Autres méthodes restent inchangées
-
+    /**
+     * Affiche le menu principal du programme.
+     */
     public static void afficherMenuPrincipal() {
-    	
         System.out.println("\nMenu :");
         System.out.println("1) Résoudre manuellement");
         System.out.println("2) Résoudre automatiquement");
@@ -70,13 +79,21 @@ public class Main {
         System.out.print("Votre choix : ");
     }
 
+    /**
+     * Lit un entier depuis l'entrée utilisateur en gérant les erreurs.
+     *
+     * @param scanner Scanner pour lire l'entrée utilisateur.
+     * @return L'entier lu depuis l'entrée.
+     */
     public static int lireEntier(Scanner scanner) {
+        // Boucle infinie pour gérer les tentatives de lecture jusqu'à ce qu'un entier valide soit fourni
         while (true) {
             try {
-                int result = scanner.nextInt();
-                scanner.nextLine(); // Consume le caractère de nouvelle ligne
-                return result;
+                int result = scanner.nextInt(); // Tenter de lire un entier
+                scanner.nextLine(); // Consommer le caractère de nouvelle ligne
+                return result; // Retourner l'entier lu avec succès
             } catch (java.util.InputMismatchException e) {
+                // En cas d'erreur de type, affiche un message et consomme l'entrée restante
                 System.out.println("Veuillez entrer un nombre entier.");
                 scanner.nextLine(); // Pour consommer l'entrée restante
             }
