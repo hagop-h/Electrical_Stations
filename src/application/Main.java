@@ -22,139 +22,59 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Communaute Agglomeration");
 
-        // Charger la communauté depuis le fichier
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Choisir le fichier de communauté");
-        File selectedFile = fileChooser.showOpenDialog(primaryStage);
+        // Sélectionner le fichier de communauté
+        File selectedFile = chooseCommunityFile(primaryStage);
 
         if (selectedFile != null) {
+            // Charger la communauté depuis le fichier
             communaute.chargerCommunaute(selectedFile.getAbsolutePath());
-            
-
-            // Créer l'interface utilisateur
-            VBox root = new VBox(10);
-            root.setAlignment(Pos.CENTER);
-
-            Label scoreLabel = new Label("Score: " + communaute.score());
-            root.getChildren().add(scoreLabel);
-            
-            // Ajouter des labels pour afficher l'état des villes
-            Label avecRechargeLabel = new Label("Villes avec zone de recharge et rechargées :");
-            Label rechargéesLabel = new Label("Villes rechargées :");
-            Label sansRechargeLabel = new Label("Villes sans zone de recharge :");
-            root.getChildren().addAll(avecRechargeLabel, rechargéesLabel, sansRechargeLabel);
-            updateStatusLabel(avecRechargeLabel, rechargéesLabel, sansRechargeLabel);  
-
-            Button solveManuallyButton = new Button("Résoudre manuellement");
-            solveManuallyButton.setOnAction(e -> {
-            	if(communaute.getcharger().isEmpty()) {
-                	communaute.genererSolutionInitiale();
-                }
-                Stage manualStage = new Stage();
-                manualStage.setTitle("Résolution Manuelle");
-
-                VBox manualRoot = new VBox(10);
-                manualRoot.setAlignment(Pos.CENTER);
-
-                Label manualScoreLabel = new Label("Score: " + communaute.score());
-                manualRoot.getChildren().add(manualScoreLabel);
-
-                // Ajouter des labels pour afficher l'état des villes manuellement
-                Label manualAvecRechargeLabel = new Label("Villes avec zone de recharge et rechargées :");
-                Label manualRechargéesLabel = new Label("Villes rechargées :");
-                Label manualSansRechargeLabel = new Label("Villes sans zone de recharge :");
-                manualRoot.getChildren().addAll(manualAvecRechargeLabel, manualRechargéesLabel, manualSansRechargeLabel);
-
-                // Ajouter un champ de texte pour que l'utilisateur entre le nom de la ville
-                TextField villeTextField = new TextField();
-                villeTextField.setPromptText("Nom de la ville");
-
-                Button addRechargeButton = new Button("Ajouter une zone de recharge");
-                addRechargeButton.setOnAction(event -> {
-                    // Récupérer le nom de la ville depuis le champ de texte
-                    String nomVille = villeTextField.getText();
-                    communaute.recharge(nomVille);
-                    
-                    // Mettre à jour les labels 
-                    manualScoreLabel.setText("Score: " + communaute.score());
-                    updateStatusLabel(manualAvecRechargeLabel, manualRechargéesLabel, manualSansRechargeLabel);
-                });
-
-                Button removeRechargeButton = new Button("Retirer une zone de recharge");
-                removeRechargeButton.setOnAction(event -> {
-                    // Récupérer le nom de la ville depuis le champ de texte
-                    String nomVille = villeTextField.getText();
-                    Ville ville = communaute.trouverVilleParNom(nomVille);
-
-                    if (ville != null) {
-                        communaute.retirerZoneRechargeMenu(ville);
-                        // Mettre à jour les labels 
-                        manualScoreLabel.setText("Score: " + communaute.score());
-                        updateStatusLabel(manualAvecRechargeLabel, manualRechargéesLabel, manualSansRechargeLabel);
-                    }
-                });
-
-
-                Button finishButton = new Button("Fin");
-                finishButton.setOnAction(event -> {
-                    manualStage.close();
-                    updateStatusLabel(avecRechargeLabel, rechargéesLabel, sansRechargeLabel);
-                    scoreLabel.setText("Score: " + communaute.score());
-                });
-
-                manualRoot.getChildren().addAll(villeTextField, addRechargeButton, removeRechargeButton, finishButton);
-
-                Scene manualScene = new Scene(manualRoot, 300, 250);
-                manualStage.setScene(manualScene);
-                manualStage.show();
-
-                updateStatusLabel(manualAvecRechargeLabel, manualRechargéesLabel, manualSansRechargeLabel);
-
-            });
-
-            Button solveAutomaticallyButton = new Button("Résoudre automatiquement");
-            solveAutomaticallyButton.setOnAction(e -> {
-                TextInputDialog dialog = new TextInputDialog();
-                dialog.setTitle("Nombre d'itérations");
-                dialog.setHeaderText("Veuillez entrer le nombre d'itérations :");
-                dialog.setContentText("Nombre d'itérations:");
-
-                int nombreIterations;
-                try {
-                    nombreIterations = Integer.parseInt(dialog.showAndWait().orElse("0"));
-                    communaute.resoudreAutomatiquementAlgo2(nombreIterations);
-                    // Mettre à jour les labels après l'action automatique
-                    scoreLabel.setText("Score: " + communaute.score());
-                    updateStatusLabel(avecRechargeLabel, rechargéesLabel, sansRechargeLabel);
-                } catch (NumberFormatException ex) {
-                    showAlert("Erreur", "Veuillez entrer un nombre valide.");
-                }
-            });
-
-            Button saveButton = new Button("Sauvegarder");
-            saveButton.setOnAction(e -> {
-                FileChooser saveFileChooser = new FileChooser();
-                saveFileChooser.setTitle("Choisir l'emplacement de sauvegarde");
-                File saveFile = saveFileChooser.showSaveDialog(primaryStage);
-
-                if (saveFile != null) {
-                    communaute.sauvegarderSolution(saveFile.getAbsolutePath());
-                    showAlert("Sauvegarde", "Solution sauvegardée avec succès !");
-                }
-            });
-
-            Button exitButton = new Button("Quitter");
-            exitButton.setOnAction(e -> primaryStage.close());
-
-            root.getChildren().addAll(solveManuallyButton, solveAutomaticallyButton, saveButton, exitButton);
-
-            Scene scene = new Scene(root, 300, 250);
-            primaryStage.setScene(scene);
-            primaryStage.show();
+            // Initialiser l'interface utilisateur
+            initializeUI(primaryStage);
         } else {
             showAlert("Erreur", "Aucun fichier sélectionné. Fermeture de l'application.");
             primaryStage.close();
         }
+    }
+
+    // Méthode pour choisir le fichier de communauté
+    private File chooseCommunityFile(Stage primaryStage) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choisir le fichier de communauté");
+        return fileChooser.showOpenDialog(primaryStage);
+    }
+
+    // Méthode pour initialiser l'interface utilisateur
+    private void initializeUI(Stage primaryStage) {
+        VBox root = createMainLayout(primaryStage);
+        Scene scene = new Scene(root, 300, 250);
+
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    // Méthode pour créer la disposition principale de l'interface utilisateur
+    private VBox createMainLayout(Stage primaryStage) {
+        VBox root = new VBox(10);
+        root.setAlignment(Pos.CENTER);
+
+        Label scoreLabel = new Label("Score: " + communaute.score());
+        root.getChildren().add(scoreLabel);
+
+        Label avecRechargeLabel = new Label("Villes avec zone de recharge et rechargées :");
+        Label rechargéesLabel = new Label("Villes rechargées :");
+        Label sansRechargeLabel = new Label("Villes sans zone de recharge :");
+        root.getChildren().addAll(avecRechargeLabel, rechargéesLabel, sansRechargeLabel);
+
+        updateStatusLabel(avecRechargeLabel, rechargéesLabel, sansRechargeLabel);
+
+        Button solveManuallyButton = createSolveManuallyButton(primaryStage, scoreLabel, avecRechargeLabel, rechargéesLabel, sansRechargeLabel);
+        Button solveAutomaticallyButton = createSolveAutomaticallyButton(primaryStage, scoreLabel, avecRechargeLabel, rechargéesLabel, sansRechargeLabel);
+        Button saveButton = createSaveButton(primaryStage);
+        Button exitButton = createExitButton(primaryStage);
+
+        root.getChildren().addAll(solveManuallyButton, solveAutomaticallyButton, saveButton, exitButton);
+
+        return root;
     }
 
     // Méthode pour mettre à jour les labels d'état des villes
@@ -167,6 +87,126 @@ public class Main extends Application {
                 communaute.getVillesSansZoneRecharge().stream().map(Ville::getNom).collect(Collectors.joining(", ")));
     }
 
+    // Méthode pour créer le bouton de résolution manuelle
+    private Button createSolveManuallyButton(Stage primaryStage, Label scoreLabel, Label avecRechargeLabel, Label rechargéesLabel, Label sansRechargeLabel) {
+        Button solveManuallyButton = new Button("Résoudre manuellement");
+        solveManuallyButton.setOnAction(e -> {
+            // Générer une solution initiale si nécessaire
+            if (communaute.getcharger().isEmpty()) {
+                communaute.genererSolutionInitiale();
+            }
+            // Créer une nouvelle fenêtre pour la résolution manuelle
+            Stage manualStage = new Stage();
+            manualStage.setTitle("Résolution Manuelle");
+
+            VBox manualRoot = new VBox(10);
+            manualRoot.setAlignment(Pos.CENTER);
+
+            Label manualScoreLabel = new Label("Score: " + communaute.score());
+            manualRoot.getChildren().add(manualScoreLabel);
+
+            Label manualAvecRechargeLabel = new Label("Villes avec zone de recharge et rechargées :");
+            Label manualRechargéesLabel = new Label("Villes rechargées :");
+            Label manualSansRechargeLabel = new Label("Villes sans zone de recharge :");
+            manualRoot.getChildren().addAll(manualAvecRechargeLabel, manualRechargéesLabel, manualSansRechargeLabel);
+
+            TextField villeTextField = new TextField();
+            villeTextField.setPromptText("Nom de la ville");
+
+            Button addRechargeButton = new Button("Ajouter une zone de recharge");
+            addRechargeButton.setOnAction(event -> {
+                String nomVille = villeTextField.getText();
+                communaute.recharge(nomVille);
+
+                manualScoreLabel.setText("Score: " + communaute.score());
+                updateStatusLabel(manualAvecRechargeLabel, manualRechargéesLabel, manualSansRechargeLabel);
+            });
+
+            Button removeRechargeButton = new Button("Retirer une zone de recharge");
+            removeRechargeButton.setOnAction(event -> {
+                String nomVille = villeTextField.getText();
+                Ville ville = communaute.trouverVilleParNom(nomVille);
+
+                if (ville != null) {
+                    communaute.retirerZoneRechargeMenu(ville);
+                    manualScoreLabel.setText("Score: " + communaute.score());
+                    updateStatusLabel(manualAvecRechargeLabel, manualRechargéesLabel, manualSansRechargeLabel);
+                }
+            });
+
+            Button finishButton = new Button("Fin");
+            finishButton.setOnAction(event -> {
+                manualStage.close();
+                updateStatusLabel(avecRechargeLabel, rechargéesLabel, sansRechargeLabel);
+                scoreLabel.setText("Score: " + communaute.score());
+            });
+
+            manualRoot.getChildren().addAll(villeTextField, addRechargeButton, removeRechargeButton, finishButton);
+
+            Scene manualScene = new Scene(manualRoot, 300, 250);
+            manualStage.setScene(manualScene);
+            manualStage.show();
+
+            updateStatusLabel(manualAvecRechargeLabel, manualRechargéesLabel, manualSansRechargeLabel);
+        });
+
+        return solveManuallyButton;
+    }
+
+    // Méthode pour créer le bouton de résolution automatique
+    private Button createSolveAutomaticallyButton(Stage primaryStage, Label scoreLabel, Label avecRechargeLabel, Label rechargéesLabel, Label sansRechargeLabel) {
+        Button solveAutomaticallyButton = new Button("Résoudre automatiquement");
+        solveAutomaticallyButton.setOnAction(e -> {
+            // Boîte de dialogue pour obtenir le nombre d'itérations
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Nombre d'itérations");
+            dialog.setHeaderText("Veuillez entrer le nombre d'itérations :");
+            dialog.setContentText("Nombre d'itérations:");
+
+            int nombreIterations;
+            try {
+                // Récupérer le nombre d'itérations depuis la boîte de dialogue
+                nombreIterations = Integer.parseInt(dialog.showAndWait().orElse("0"));
+                // Résoudre automatiquement et mettre à jour les labels
+                communaute.resoudreAutomatiquementAlgo2(nombreIterations);
+                scoreLabel.setText("Score: " + communaute.score());
+                updateStatusLabel(avecRechargeLabel, rechargéesLabel, sansRechargeLabel);
+            } catch (NumberFormatException ex) {
+                showAlert("Erreur", "Veuillez entrer un nombre valide.");
+            }
+        });
+
+        return solveAutomaticallyButton;
+    }
+
+    // Méthode pour créer le bouton de sauvegarde
+    private Button createSaveButton(Stage primaryStage) {
+        Button saveButton = new Button("Sauvegarder");
+        saveButton.setOnAction(e -> {
+            // Boîte de dialogue pour choisir l'emplacement de sauvegarde
+            FileChooser saveFileChooser = new FileChooser();
+            saveFileChooser.setTitle("Choisir l'emplacement de sauvegarde");
+            File saveFile = saveFileChooser.showSaveDialog(primaryStage);
+
+            if (saveFile != null) {
+                // Sauvegarder la solution et afficher une alerte
+                communaute.sauvegarderSolution(saveFile.getAbsolutePath());
+                showAlert("Sauvegarde", "Solution sauvegardée avec succès !");
+            }
+        });
+
+        return saveButton;
+    }
+
+    // Méthode pour créer le bouton de sortie
+    private Button createExitButton(Stage primaryStage) {
+        Button exitButton = new Button("Quitter");
+        exitButton.setOnAction(e -> primaryStage.close());
+
+        return exitButton;
+    }
+
+    // Méthode pour afficher une alerte
     private void showAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
