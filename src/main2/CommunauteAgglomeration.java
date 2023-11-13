@@ -632,24 +632,24 @@ public class CommunauteAgglomeration {
 	 * @return true si la ville respecte la contrainte, sinon false.
 	 */
 	public boolean respecteContrainte(Ville ville) {
-	    if (!contientZoneRecharge(ville)) {
-	        // La ville doit avoir une zone de recharge ou être reliée à une ville avec zone de recharge
-	        return false;
-	    }
-	    for (Route route : routes) {
-	        if (route.getVilleA().equals(ville)) {
-	            // Si la route va vers villeA, vérifie que villeB a une zone de recharge ou est reliée à une ville avec zone de recharge
-	            if (!contientZoneRecharge(route.getVilleB()) && !estRelieeAvecBorne(route.getVilleB())) {
-	                return false;
-	            }
-	        } else if (route.getVilleB().equals(ville)) {
-	            // Si la route va vers villeB, vérifie que villeA a une zone de recharge ou est reliée à une ville avec zone de recharge
-	            if (!contientZoneRecharge(route.getVilleA()) && !estRelieeAvecBorne(route.getVilleA())) {
-	                return false;
-	            }
-	        }
-	    }
-	    return true;
+		if (!contientZoneRecharge(ville)) {
+			// La ville doit avoir une zone de recharge ou être reliée à une ville avec zone de recharge
+			return false;
+		}
+		for (Route route : routes) {
+			if (route.getVilleA().equals(ville)) {
+				// Si la route va vers villeA, vérifie que villeB a une zone de recharge ou est reliée à une ville avec zone de recharge
+				if (!(contientZoneRecharge(route.getVilleB()) || estRelieeAvecBorne(route.getVilleB()))) {
+					return false;
+				}
+			} else if (route.getVilleB().equals(ville)) {
+				// Si la route va vers villeB, vérifie que villeA a une zone de recharge ou est reliée à une ville avec zone de recharge
+				if (!(contientZoneRecharge(route.getVilleA()) || estRelieeAvecBorne(route.getVilleA()))) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	/**
