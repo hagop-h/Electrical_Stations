@@ -119,13 +119,13 @@ public class CommunauteAgglomeration {
 	 *
 	 * @param ville Ville pour laquelle ajuster les zones de recharge connectées.
 	 */
-	public void ajusterZonesRechargeConnectees(Ville ville) {
+	public void ajusterRechargeConnectees(Ville ville) {
 		// Parcourir les routes de la communauté d'agglomération
 	    for (Route route : routes) {
 			// Vérifier si la ville en paramètre est la ville de départ de la route
-	        if (route.getVilleA().equals(ville) && !contientZoneRecharge(route.getVilleB())) {
+	        if (route.getVilleA().equals(ville) && !contientRecharge(route.getVilleB())) {
 	            charger.add(new Charger(route.getVilleB())); // Ajouter une zone de recharge à la ville connectée si elle n'a pas de zone de recharge
-	        } else if (route.getVilleB().equals(ville) && !contientZoneRecharge(route.getVilleA())) {
+	        } else if (route.getVilleB().equals(ville) && !contientRecharge(route.getVilleA())) {
 	            charger.add(new Charger(route.getVilleA())); // Ajouter une zone de recharge à la ville connectée si elle n'a pas de zone de recharge
 	        }
 	    }
@@ -257,7 +257,7 @@ public class CommunauteAgglomeration {
 		// Parcourir de la liste des villes
         for (Ville ville : villes) {
 			// Vérification si la ville n'a pas de zone de recharge et que la zone de recharge est désactivée
-			if (!contientZoneRecharge(ville) && !ville.getzoneDeRecharge()) {
+			if (!contientRecharge(ville) && !ville.getzoneDeRecharge()) {
 				// Ajout de la ville à la liste si elle n'est pas déjà présente
 				if (!villesSansZoneRecharge.contains(ville)) {
                     villesSansZoneRecharge.add(ville);
@@ -283,10 +283,10 @@ public class CommunauteAgglomeration {
 	        if (!ville.getzoneDeRecharge() ) {
 	            ville.setzoneDeRechargeTrue(); // Ajout de la zone de recharge à la ville
 				// Vérification si la zone de recharge n'existe pas déjà
-	            if(!contientZoneRecharge(ville)) {
+	            if(!contientRecharge(ville)) {
 	            	charger.add(new Charger(ville)); // Ajout d'une nouvelle zone de recharge à la liste
 	            }
-	            ajusterZonesRechargeConnectees(ville); // Ajustement des zones de recharge connectées
+	            ajusterRechargeConnectees(ville); // Ajustement des recharge connectées
 				// Vérification de la contrainte d'accessibilité
 	            if (respecteContrainte(ville)) {
 	                System.out.println("Zone de recharge ajoutée à " + ville.getNom() + ".");
@@ -316,10 +316,10 @@ public class CommunauteAgglomeration {
 	        if (!ville.getzoneDeRecharge() ) {
 	            ville.setzoneDeRechargeTrue();  // Ajout de la zone de recharge à la ville
 				// Vérification si la zone de recharge n'existe pas déjà
-	            if(!contientZoneRecharge(ville)) {
+	            if(!contientRecharge(ville)) {
 	            	charger.add(new Charger(ville)); // Ajout d'une nouvelle zone de recharge à la liste
 	            }
-	            ajusterZonesRechargeConnectees(ville); // Ajustement des zones de recharge connectées
+	            ajusterRechargeConnectees(ville); // Ajustement des recharge connectées
 				// Vérification de la contrainte d'accessibilité
 	            if (respecteContrainte(ville)) {
 	                System.out.println("Zone de recharge ajoutée à " + ville.getNom() + ".");
@@ -368,19 +368,19 @@ public class CommunauteAgglomeration {
 	 *
 	 * @param ville Ville pour laquelle les zones de recharge connectées seront retirées.
 	 */
-    public void retirerZonesRechargeConnectees(Ville ville) {
+    public void retirerRechargeConnectees(Ville ville) {
         List<Ville> villesConnectees = new ArrayList<>();
 		// Parcourir des routes pour trouver les villes connectées avec des zones de recharge
         for (Route route : routes) {
-            if (route.getVilleA().equals(ville) && contientZoneRecharge(route.getVilleB()) && !route.getVilleB().getzoneDeRecharge()) {
+            if (route.getVilleA().equals(ville) && contientRecharge(route.getVilleB()) && !route.getVilleB().getzoneDeRecharge()) {
                 villesConnectees.add(route.getVilleB());
-            } else if (route.getVilleB().equals(ville) && contientZoneRecharge(route.getVilleA()) && !route.getVilleA().getzoneDeRecharge()) {
+            } else if (route.getVilleB().equals(ville) && contientRecharge(route.getVilleA()) && !route.getVilleA().getzoneDeRecharge()) {
                 villesConnectees.add(route.getVilleA());
             }
         }
 		// Retrait des zones de recharge connectées
         for (Ville villeConnectee : villesConnectees) {
-            retirerZoneRecharge(villeConnectee);
+            retirerRecharge(villeConnectee);
         }
     }
 
@@ -394,12 +394,12 @@ public class CommunauteAgglomeration {
 	    String nomVille = scanner.nextLine();
 	    Ville ville = trouverVilleParNom(nomVille);
 	    if (ville != null) {
-	        if (contientZoneRecharge(ville) && peutRetirerZoneRecharge(ville) && ville.getzoneDeRecharge()) {
-	            retirerZoneRecharge(ville);
+	        if (contientRecharge(ville) && peutRetirerRecharge(ville) && ville.getzoneDeRecharge()) {
+	            retirerRecharge(ville);
 	            ville.setzoneDeRechargeFalse();
-	            retirerZonesRechargeConnectees(ville);
+	            retirerRechargeConnectees(ville);
 	            System.out.println("Zone de recharge retirée de " + ville.getNom() + ".");
-	        } else if (!contientZoneRecharge(ville)) {
+	        } else if (!contientRecharge(ville)) {
 	            System.out.println("Il n'y a pas de zone de recharge dans " + ville.getNom() + ".");
 	        } else {
 	            System.out.println("Impossible de retirer la zone de recharge de " + ville.getNom() + ". Cela violerait la contrainte d'accessibilité ou ce n'est pas la source de la recharge.");
@@ -408,25 +408,25 @@ public class CommunauteAgglomeration {
 	        System.out.println("Ville non trouvée. Veuillez réessayer.");
 	    }
 	}
-
+    
 	/**
 	 * Retire la zone de recharge pour une ville donnée, respectant les contraintes d'accessibilité.
 	 *
 	 * @param ville Ville pour laquelle retirer la zone de recharge.
 	 */
-	public void retirerZoneRecharge(Ville ville) {
+	public void retirerRecharge(Ville ville) {
 		// Vérifier si le retrait de la zone de recharge est possible sans violer les contraintes
-	    if (!peutRetirerZoneRecharge(ville)) {
+	    if (!peutRetirerRecharge(ville)) {
 	        System.out.println("Impossible de retirer la zone de recharge de " + ville.getNom() + ". Cela violerait la contrainte d'accessibilité.");
 	        return;
 	    }
 		// Vérifier si une ville connectée possède une source, si c'est le cas, la ville actuelle conserve sa zone de recharge
 	    boolean connectedCityHasSource = false;
 	    for (Route route : routes) {
-	        if (route.getVilleA().equals(ville) && contientZoneRecharge(route.getVilleB()) && route.getVilleB().getzoneDeRecharge()) {
+	        if (route.getVilleA().equals(ville) && contientRecharge(route.getVilleB()) && route.getVilleB().getzoneDeRecharge()) {
 	            connectedCityHasSource = true;
 	            break;
-	        } else if (route.getVilleB().equals(ville) && contientZoneRecharge(route.getVilleA()) && route.getVilleA().getzoneDeRecharge()) {
+	        } else if (route.getVilleB().equals(ville) && contientRecharge(route.getVilleA()) && route.getVilleA().getzoneDeRecharge()) {
 	            connectedCityHasSource = true;
 	            break;
 	        }
@@ -446,11 +446,11 @@ public class CommunauteAgglomeration {
 	 * @param ville Ville pour laquelle vérifier la possibilité de retrait de la zone de recharge.
 	 * @return true si la zone de recharge peut être retirée, sinon false.
 	 */
-	public boolean peutRetirerZoneRecharge(Ville ville) {
+	public boolean peutRetirerRecharge(Ville ville) {
 		// Parcourir toutes les routes associées à la ville
         for (Route route : routes) {
 			// Vérifier si la ville est l'une des extrémités de la route et si aucune de ces extrémités n'a de zone de recharge
-            if ((route.getVilleA().equals(ville) || route.getVilleB().equals(ville)) && !contientZoneRecharge(route.getVilleA()) && !contientZoneRecharge(route.getVilleB()) ) {
+            if ((route.getVilleA().equals(ville) || route.getVilleB().equals(ville)) && !contientRecharge(route.getVilleA()) && !contientRecharge(route.getVilleB()) ) {
                 return false; // Si une telle route est trouvée, la zone de recharge ne peut pas être retirée
             }
         }
@@ -526,11 +526,11 @@ public class CommunauteAgglomeration {
 		// Parcourir toutes les routes de la communauté
 	    for (Route route : routes) {
 			// Si la ville est le point de départ de la route et que la ville d'arrivée a une zone de recharge
-			if (route.getVilleA().equals(ville) && contientZoneRecharge(route.getVilleB())) {
+			if (route.getVilleA().equals(ville) && contientRecharge(route.getVilleB())) {
 	            return true;
 	        }
 			// Si la ville est le point d'arrivée de la route et que la ville de départ a une zone de recharge
-			else if (route.getVilleB().equals(ville) && contientZoneRecharge(route.getVilleA())) {
+			else if (route.getVilleB().equals(ville) && contientRecharge(route.getVilleA())) {
 	            return true;
 	        }
 	    }
@@ -543,7 +543,7 @@ public class CommunauteAgglomeration {
 	 * @param ville La ville à vérifier.
 	 * @return true si la ville contient une zone de recharge, sinon false.
 	 */
-	public boolean contientZoneRecharge(Ville ville) {
+	public boolean contientRecharge(Ville ville) {
 		// Parcourir la liste des chargeurs pour la communauté
 		for (Charger charger : charger) {
 			// Si le chargeur est associé à la ville spécifiée, la ville contient une zone de recharge
@@ -617,7 +617,7 @@ public class CommunauteAgglomeration {
 	    for (Route route : routes) {
 	        if (route.getVilleA().equals(ville) || route.getVilleB().equals(ville)) {
 				// Si la route va vers villeA ou villeB, vérifie que l'une de ces villes a une zone de recharge
-	            if (contientZoneRecharge(route.getVilleA()) || contientZoneRecharge(route.getVilleB())) {
+	            if (contientRecharge(route.getVilleA()) || contientRecharge(route.getVilleB())) {
 	                return true;
 	            }
 	        }
@@ -632,19 +632,19 @@ public class CommunauteAgglomeration {
 	 * @return true si la ville respecte la contrainte, sinon false.
 	 */
 	public boolean respecteContrainte(Ville ville) {
-		if (!contientZoneRecharge(ville)) {
+		if (!contientRecharge(ville)) {
 			// La ville doit avoir une zone de recharge ou être reliée à une ville avec zone de recharge
 			return false;
 		}
 		for (Route route : routes) {
 			if (route.getVilleA().equals(ville)) {
 				// Si la route va vers villeA, vérifie que villeB a une zone de recharge ou est reliée à une ville avec zone de recharge
-				if (!(contientZoneRecharge(route.getVilleB()) || estRelieeAvecBorne(route.getVilleB()))) {
+				if (!(contientRecharge(route.getVilleB()) || estRelieeAvecBorne(route.getVilleB()))) {
 					return false;
 				}
 			} else if (route.getVilleB().equals(ville)) {
 				// Si la route va vers villeB, vérifie que villeA a une zone de recharge ou est reliée à une ville avec zone de recharge
-				if (!(contientZoneRecharge(route.getVilleA()) || estRelieeAvecBorne(route.getVilleA()))) {
+				if (!(contientRecharge(route.getVilleA()) || estRelieeAvecBorne(route.getVilleA()))) {
 					return false;
 				}
 			}
