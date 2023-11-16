@@ -3,13 +3,13 @@ package main2;
 import java.util.Scanner;
 
 /**
- * Classe principale contenant la méthode main pour exécuter le programme de gestion de la communauté d'agglomération.
+ * Classe principale contenant la méthode main pour exécuter le programme de gestion de la communauté d'agglomération
  */
 public class Main {
     /**
-     * Méthode principale exécutant le programme.
+     * Méthode principale exécutant le programme
      *
-     * @param args Les arguments en ligne de commande (le chemin du fichier peut être fourni en argument).
+     * @param args Les arguments en ligne de commande (le chemin du fichier peut être fourni en argument)
      */
     public static void main(String[] args) {
         String cheminFichier = ""; // Déclaration et initialisation d'une variable pour stocker le chemin du fichier
@@ -68,7 +68,7 @@ public class Main {
     }
 
     /**
-     * Affiche le menu principal du programme.
+     * Affiche le menu principal du programme
      */
     public static void afficherMenuPrincipal() {
         System.out.println("\nMenu :");
@@ -80,10 +80,10 @@ public class Main {
     }
 
     /**
-     * Lit un entier depuis l'entrée utilisateur en gérant les erreurs.
+     * Lit un entier depuis l'entrée utilisateur en gérant les erreurs
      *
-     * @param scanner Scanner pour lire l'entrée utilisateur.
-     * @return L'entier lu depuis l'entrée.
+     * @param scanner Scanner pour lire l'entrée utilisateur
+     * @return L'entier lu depuis l'entrée
      */
     public static int lireEntier(Scanner scanner) {
         // Boucle infinie pour gérer les tentatives de lecture jusqu'à ce qu'un entier valide soit fourni

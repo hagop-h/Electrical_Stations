@@ -18,6 +18,10 @@ public class Ville {
     	sourceVille = false;
     }
 
+    public void setSourceVille(boolean etat) {
+        sourceVille = etat;
+    }
+
     public boolean getSourceVille() {
     	return sourceVille;
     }
