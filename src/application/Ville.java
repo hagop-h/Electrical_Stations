@@ -2,39 +2,35 @@ package application;
 
 
 public class Ville {
-    private String nom;
-    private boolean zoneDeRecharge=false;;
-    
-    public Ville(String nom2) {
-        this.nom = nom2;
+    private String nom; // Nom d'une ville
+    private boolean zoneDeRecharge = false; // Pour indiquer si une ville possède une zone de recharge
+
+    public Ville(String nom) {
+        this.nom = nom;
     }
-    
+
     public void setzoneDeRechargeTrue() {
-    	zoneDeRecharge=true;
+        zoneDeRecharge = true;
     }
+
     public void setzoneDeRechargeFalse() {
-    	zoneDeRecharge=false;
+        zoneDeRecharge = false;
     }
+
+    public void setzoneDeRecharge(boolean etatInitial) {
+        zoneDeRecharge = etatInitial;
+    }
+
     public boolean getzoneDeRecharge() {
-    	return zoneDeRecharge;
+        return zoneDeRecharge;
     }
-    
-    
+
     public String getNom() {
-    	return nom;
+        return nom;
     }
 
     @Override
     public String toString() {
-        return "Ville{" +
-                "nom=" + nom +
-                ", zoneDeRecharge=" + zoneDeRecharge +
-                '}';
+        return "Ville {" + "nom = " + nom + ", zoneDeRecharge = " + zoneDeRecharge + '}';
     }
-
-	public void setzoneDeRecharge(boolean etatInitial) {
-		zoneDeRecharge=etatInitial;
-	}
-	
-
 }

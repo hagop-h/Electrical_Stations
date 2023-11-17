@@ -31,4 +31,3 @@ class Graph {
         adjacencyList.get(vertex2).remove(vertex1);
     }
 }
-

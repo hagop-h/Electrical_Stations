@@ -7,7 +7,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
 import java.io.File;
 import java.util.stream.Collectors;
 
@@ -92,7 +91,7 @@ public class Main extends Application {
         Button solveManuallyButton = new Button("Résoudre manuellement");
         solveManuallyButton.setOnAction(e -> {
             // Générer une solution initiale si nécessaire
-            if (communaute.getcharger().isEmpty()) {
+            if (communaute.getCharger().isEmpty()) {
                 communaute.genererSolutionInitiale();
             }
             // Créer une nouvelle fenêtre pour la résolution manuelle

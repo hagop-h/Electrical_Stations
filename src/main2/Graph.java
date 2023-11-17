@@ -36,7 +36,6 @@ public class Graph {
         adjacencyList.get(vertex2).add(vertex1);
     }
 
-
     /**
      * Récupère l'ensemble des voisins d'un sommet donné
      *
