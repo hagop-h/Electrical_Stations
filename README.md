@@ -31,8 +31,9 @@ Pour installer et exécuter le logiciel suivez les étapes ci-dessous :
 
 Clonez le dépôt GitHub du projet en utilisant la commande suivante dans votre terminal :
 
-<kbd>git clone https://github.com/sepanta007/Electrical_Stations
-</kbd>
+```
+git clone https://github.com/sepanta007/Electrical_Stations
+```
 
 ou téléchargez le code source directement depuis la page du projet.
 
