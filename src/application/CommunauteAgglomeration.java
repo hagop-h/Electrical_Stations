@@ -1,5 +1,6 @@
 package application;
 
+import phase2.*;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
@@ -12,8 +13,8 @@ import java.util.stream.*;
 public class CommunauteAgglomeration {
     private Set<Ville> villes; // Ensemble de villes dans une communauté
     private Set<Route> routes; // Ensemble de routes entre les villes
-    private List<Charger> charger; // Liste de zones de recharge présentes dans une communauté
-    private Graph graph; // Graph représentant la connectivité entre les villes
+    private List<ZoneRecharge> zonesRecharge; // Liste de zones de recharge présentes dans une communauté
+    private Graphe graphe; // Graph représentant la connectivité entre les villes
 
 	/**
 	 * Constructeur de la classe CommunauteAgglomeration
@@ -22,8 +23,8 @@ public class CommunauteAgglomeration {
     public CommunauteAgglomeration() {
         villes = new HashSet<>();
         routes = new HashSet<>();
-        charger = new ArrayList<>();
-        graph = new Graph();
+        zonesRecharge = new ArrayList<>();
+        graphe = new Graphe();
     }
 
 	/**
@@ -31,8 +32,8 @@ public class CommunauteAgglomeration {
 	 *
 	 * @return Une liste d'objets Charger
 	 */
-	public List<Charger> getCharger() {
-		return charger; // Retourne la liste des objets Charger
+	public List<ZoneRecharge> getZonesRecharge() {
+		return zonesRecharge; // Retourne la liste des objets Charger
 	}
 
 	/**
@@ -76,9 +77,9 @@ public class CommunauteAgglomeration {
 		for (Route route : routes) {
 			// Vérifier si la ville en paramètre est la ville de départ de la route
 			if (route.getVilleA().equals(ville) && !contientZoneRecharge(route.getVilleB())) {
-				charger.add(new Charger(route.getVilleB())); // Ajouter une zone de recharge à la ville connectée si elle n'a pas de zone de recharge
+				zonesRecharge.add(new ZoneRecharge(route.getVilleB())); // Ajouter une zone de recharge à la ville connectée si elle n'a pas de zone de recharge
 			} else if (route.getVilleB().equals(ville) && !contientZoneRecharge(route.getVilleA())) {
-				charger.add(new Charger(route.getVilleA())); // Ajouter une zone de recharge à la ville connectée si elle n'a pas de zone de recharge
+				zonesRecharge.add(new ZoneRecharge(route.getVilleA())); // Ajouter une zone de recharge à la ville connectée si elle n'a pas de zone de recharge
 			}
 		}
 	}
@@ -90,13 +91,13 @@ public class CommunauteAgglomeration {
 	public void afficherVillesAvecOuSansRecharge() {
 		// Affichage des villes rechargées avec leurs propres zones de recharge
 		System.out.println("Villes rechargées avec leurs propres zone de recharge :");
-		for (Charger charger : getVillesAvecSourceRecharge()) {
-			System.out.println("- " + charger.getVille().getNom());
+		for (ZoneRecharge zoneRecharge : getVillesAvecSourceRecharge()) {
+			System.out.println("- " + zoneRecharge.getVille().getNom());
 		}
 		// Affichage des villes rechargées sans leurs propres zones de recharge
 		System.out.println("\nVilles rechargées sans leurs propres zone de recharge :");
-		for (Charger charger : getVillesRechargeesSansSource()) {
-			System.out.println("- " + charger.getVille().getNom());
+		for (ZoneRecharge zoneRecharge : getVillesRechargeesSansSource()) {
+			System.out.println("- " + zoneRecharge.getVille().getNom());
 		}
 		// Affichage des villes non rechargées
 		System.out.println("\nVilles non rechargées :");
@@ -128,15 +129,15 @@ public class CommunauteAgglomeration {
 			// Sauvegarder les villes rechargées avec leurs propres zones de recharge
 			writer.write("\nVilles rechargées avec leurs propres zone de recharge :");
 			writer.newLine();
-			for (Charger charger : getVillesAvecSourceRecharge()) {
-				writer.write("- " + charger.getVille().getNom());
+			for (ZoneRecharge zoneRecharge : getVillesAvecSourceRecharge()) {
+				writer.write("- " + zoneRecharge.getVille().getNom());
 				writer.newLine();
 			}
 			// Sauvegarder les villes rechargées sans leurs propres zones de recharge
 			writer.write("\nVilles rechargées sans leurs propres zone de recharge :");
 			writer.newLine();
-			for (Charger charger : getVillesRechargeesSansSource()) {
-				writer.write("- " + charger.getVille().getNom());
+			for (ZoneRecharge zoneRecharge : getVillesRechargeesSansSource()) {
+				writer.write("- " + zoneRecharge.getVille().getNom());
 				writer.newLine();
 			}
 			// Sauvegarder les villes non rechargées
@@ -160,9 +161,9 @@ public class CommunauteAgglomeration {
 	 *
 	 * @return Liste des objets Charger représentant les villes avec leur propre zone de recharge
 	 */
-	public List<Charger> getVillesAvecSourceRecharge() {
+	public List<ZoneRecharge> getVillesAvecSourceRecharge() {
 		// Filtrage des zones de recharge qui sont des sources
-		return charger.stream().filter(Charger::estSourceRecharge).collect(Collectors.toList());
+		return zonesRecharge.stream().filter(ZoneRecharge::estSourceRecharge).collect(Collectors.toList());
 	}
 
 	/**
@@ -170,9 +171,9 @@ public class CommunauteAgglomeration {
 	 *
 	 * @return Liste des objets Charger représentant les villes rechargées sans leur propre zone de recharge
 	 */
-	public List<Charger> getVillesRechargeesSansSource() {
+	public List<ZoneRecharge> getVillesRechargeesSansSource() {
 		// Filtrage des zones de recharge qui ne sont pas des sources
-		return charger.stream().filter(parking -> !parking.estSourceRecharge()).collect(Collectors.toList());
+		return zonesRecharge.stream().filter(zoneRecharge -> !zoneRecharge.estSourceRecharge()).collect(Collectors.toList());
 	}
 
 	/**
@@ -210,7 +211,7 @@ public class CommunauteAgglomeration {
 				ville.setzoneDeRechargeTrue();  // Ajout de la zone de recharge à la ville
 				// Vérification si la zone de recharge n'existe pas déjà
 				if(!contientZoneRecharge(ville)) {
-					charger.add(new Charger(ville)); // Ajout d'une nouvelle zone de recharge à la liste
+					zonesRecharge.add(new ZoneRecharge(ville)); // Ajout d'une nouvelle zone de recharge à la liste
 				}
 				ajusterZonesRechargeConnectees(ville); // Ajustement des zones de recharge connectées
 				// Vérification de la contrainte d'accessibilité
@@ -218,7 +219,7 @@ public class CommunauteAgglomeration {
 					System.out.println("Zone de recharge ajoutée à " + ville.getNom() + ".");
 				} else {
 					// Retrait de la zone de recharge en cas de violation de la contrainte
-					charger.removeIf(parking -> parking.getVille().equals(ville));
+					zonesRecharge.removeIf(parking -> parking.getVille().equals(ville));
 					System.out.println("Impossible d'ajouter la zone de recharge à " + ville.getNom() + ". Cela violerait la contrainte d'accessibilité.");
 				}
 			} else {
@@ -240,7 +241,7 @@ public class CommunauteAgglomeration {
 		if (villeA != null && villeB != null) {
 			Route route = new Route(villeA, villeB); // Création d'une nouvelle route
 			routes.add(route); // Ajout de la route à la liste des routes
-			graph.addEdge(villeA.getNom(), villeB.getNom()); // Mise à jour de la représentation du graphe
+			graphe.addEdge(villeA.getNom(), villeB.getNom()); // Mise à jour de la représentation du graphe
 		} else {
 			System.out.println("Villes non trouvées. Veuillez réessayer.");
 		}
@@ -253,7 +254,7 @@ public class CommunauteAgglomeration {
 	 */
 	public void ajouterVille(Ville ville) {
 		villes.add(ville); // Ajout de la ville à la liste des villes
-		graph.addVertex(ville.getNom()); // Mise à jour du graphe avec le nom de la ville comme un nouveau sommet
+		graphe.addVertex(ville.getNom()); // Mise à jour du graphe avec le nom de la ville comme un nouveau sommet
 	}
 
 	/**
@@ -311,7 +312,7 @@ public class CommunauteAgglomeration {
 	 * @return vrai si la ville elle-même ou l'un de ses voisins a une zone de recharge, sinon faux
 	 */
 	public boolean peutRetirerRecharge(Ville ville) {
-		Set<String> voisins = graph.getNeighbors(ville.getNom()); // Récupérer la liste des noms des voisins de la ville à partir du graphe
+		Set<String> voisins = graphe.getNeighbors(ville.getNom()); // Récupérer la liste des noms des voisins de la ville à partir du graphe
 		// Retourner vrai si la ville elle-même a une zone de recharge ou si l'un de ses voisins a une zone de recharge
 		return ville.getzoneDeRecharge() || voisins.stream().anyMatch(s -> trouverVilleParNom(s).getzoneDeRecharge());
 	}
@@ -337,7 +338,7 @@ public class CommunauteAgglomeration {
 	 * @return vrai si la contrainte des voisins est respectée, sinon faux
 	 */
 	public boolean contrainteVoisinsHelper(Ville ville, Set<String> visited) {
-		Set<String> voisins = graph.getNeighbors(ville.getNom()); // Récupérer la liste des noms des voisins de la ville à partir du graphe
+		Set<String> voisins = graphe.getNeighbors(ville.getNom()); // Récupérer la liste des noms des voisins de la ville à partir du graphe
 		// Parcourir les voisins de la ville
 		for (String s : voisins) {
 			Ville v = trouverVilleParNom(s);
@@ -445,9 +446,9 @@ public class CommunauteAgglomeration {
 	 */
 	public boolean contientZoneRecharge(Ville ville) {
 		// Parcourir la liste des chargeurs pour la communauté
-		for (Charger charger : charger) {
+		for (ZoneRecharge zoneRecharge : zonesRecharge) {
 			// Si le chargeur est associé à la ville spécifiée, la ville contient une zone de recharge
-			if (charger.getVille().equals(ville)) {
+			if (zoneRecharge.getVille().equals(ville)) {
 				return true;
 			}
 		}
@@ -562,6 +563,6 @@ public class CommunauteAgglomeration {
 	 */
 	public int score() {
 		// Utilisation de Stream pour filtrer les chargeurs en tant que sources et compter leur nombre
-		return (int) charger.stream().filter(Charger::estSourceRecharge).count();
+		return (int) zonesRecharge.stream().filter(ZoneRecharge::estSourceRecharge).count();
 	}
 }
