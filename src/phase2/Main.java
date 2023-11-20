@@ -12,7 +12,7 @@ public class Main {
      * @param args Les arguments en ligne de commande (le chemin du fichier peut être fourni en argument)
      */
     public static void main(String[] args) {
-        String cheminFichier = ""; // Déclaration et initialisation d'une variable pour stocker le chemin du fichier
+        String cheminFichier; // Déclaration et initialisation d'une variable pour stocker le chemin du fichier
         Scanner scanner = new Scanner(System.in); // Création d'une instance de Scanner pour lire l'entrée utilisateur
         // Vérifier si un chemin de fichier est fourni en argument
         if (args.length != 1) {
