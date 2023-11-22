@@ -473,13 +473,24 @@ public class CommunauteAgglomeration {
                     String[] elements = ligne.split("[()]");
                     // Vérifier s'il y a au moins deux éléments
                     if (elements.length >= 2) {
-                        // Extraire le nom de la ville
+                    	boolean test = true;
+                    	// Extraire le nom de la ville
                         String nomVille = elements[1].trim();
                         // Créer une nouvelle ville et l'ajoute à la liste des villes
                         Ville ville = new Ville(nomVille);
-                        villes.add(ville);
-                        // Ajoute également la ville au graphe
-                        ajouterVille(ville);
+                        for(Ville v : villes) {
+                        	if(v.getNom().equals(ville.getNom())) {
+                        		test=false;
+                        	}
+                        }
+                        if(test) {
+                        	villes.add(ville);
+                        	// Ajoute également la ville au graphe
+                        	ajouterVille(ville);
+                        }
+                        else {
+                        	System.out.println("Ville existe déjà !");
+                        }
                     }
                 }
                 // Si la ligne commence par "route"
