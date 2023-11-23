@@ -40,9 +40,7 @@ public class Main {
                     break;
                 case 2:
                     // Option 2 : Résoudre automatiquement avec l'Algorithme 2
-                    System.out.println("\nVeuillez entrer le nombre d'itérations :");
-                    int nombreIterations = lireEntier(scanner);
-                    communaute.resoudreAutomatiquementAlgo2(nombreIterations);
+                    communaute.resoudreAutomatiquementAlgo2();
                     break;
                 case 3:
                     // Option 3 : Sauvegarder

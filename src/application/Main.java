@@ -131,22 +131,10 @@ public class Main extends Application {
     private Button createSolveAutomaticallyButton(Stage primaryStage, Label scoreLabel, Label avecRechargeLabel, Label rechargéesLabel, Label sansRechargeLabel) {
         Button solveAutomaticallyButton = new Button("Résoudre automatiquement");
         solveAutomaticallyButton.setOnAction(e -> {
-            // Boîte de dialogue pour obtenir le nombre d'itérations
-            TextInputDialog dialog = new TextInputDialog();
-            dialog.setTitle("Nombre d'itérations");
-            dialog.setHeaderText("Veuillez entrer le nombre d'itérations :");
-            dialog.setContentText("Nombre d'itérations:");
-            int nombreIterations;
-            try {
-                // Récupérer le nombre d'itérations depuis la boîte de dialogue
-                nombreIterations = Integer.parseInt(dialog.showAndWait().orElse("0"));
-                // Résoudre automatiquement et mettre à jour les labels
-                communaute.resoudreAutomatiquementAlgo2(nombreIterations);
-                scoreLabel.setText("Score: " + communaute.score());
-                updateStatusLabel(avecRechargeLabel, rechargéesLabel, sansRechargeLabel);
-            } catch (NumberFormatException ex) {
-                showAlert("Erreur", "Veuillez entrer un nombre valide.");
-            }
+        // Résoudre automatiquement et mettre à jour les labels
+        communaute.resoudreAutomatiquementAlgo2();
+        scoreLabel.setText("Score: " + communaute.score());
+        updateStatusLabel(avecRechargeLabel, rechargéesLabel, sansRechargeLabel);       
         });
         return solveAutomaticallyButton;
     }

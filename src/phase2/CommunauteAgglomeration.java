@@ -2,7 +2,6 @@ package phase2;
 
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.*;
 import java.util.stream.*;
 
 /**
@@ -14,7 +13,9 @@ public class CommunauteAgglomeration {
     private Set<Route> routes; // Ensemble de routes entre les villes
     private List<ZoneRecharge> zonesRecharge; // Liste de zones de recharge présentes dans une communauté
     private Graphe graphe; // Graph représentant la connectivité entre les villes
-
+    private int scoreCourant; // Pour algorithme optimale
+    private Set<Ville> problematicCities = new HashSet<>(); // Pour choisir ville optimale
+    
     /**
      * Constructeur de la classe CommunauteAgglomeration
      * Initialise les collections de villes, de routes, de zones de recharge, et le graphe
@@ -561,41 +562,83 @@ public class CommunauteAgglomeration {
     }
 
     /**
-     * Choisi de manière aléatoire une ville parmi celles présentes dans la communauté
-     *
-     * @return Une ville choisie aléatoirement
-     */
-    public Ville choisirVilleAleatoire() {
-        List<Ville> villeList = new ArrayList<>(villes); // Convertir la liste de villes en une liste modifiable
-        // Utiliser ThreadLocalRandom pour obtenir un index aléatoire dans la liste
-        return villeList.get(ThreadLocalRandom.current().nextInt(villeList.size()));
-    }
-
-    /**
      * Résout automatiquement le problème en utilisant un algorithme itératif
      * Choisi aléatoirement une ville, la recharge si elle ne l'est pas, et évalue le score
      * Répète le processus jusqu'à atteindre le nombre d'itérations spécifié
      *
      * @param k Le nombre d'itérations maximum.
      */
-    public void resoudreAutomatiquementAlgo2(int k) {
+    public void resoudreAutomatiquementAlgo2() {
         int i = 0; // Compteur d'itérations
-        int scoreCourant = score(); // Score initial
+        scoreCourant = score(); // Initialiser scoreCourant
+        int k=1;
         while (i < k) {
-            Ville ville = choisirVilleAleatoire(); // Choix aléatoire d'une ville
-            if (!ville.getzoneDeRecharge()) {
-                recharge(ville.getNom()); // Recharger la ville si elle ne l'est pas
-            }
-            int nouveauScore = score(); // Évaluer le nouveau score
-            if (nouveauScore <= scoreCourant) {
-                i = 0; // Réinitialiser le compteur si le score s'améliore ou reste inchangé
-                scoreCourant = nouveauScore;
-            }
-            else {
-                i++; // Incrémenter le compteur sinon
+            Ville ville = choisirVilleOptimale(); // Choix de la ville optimale à recharger
+            if (ville != null) {
+                recharge(ville.getNom()); // Recharger la ville
+                int nouveauScore = score(); // Évaluer le nouveau score
+
+                if (nouveauScore <= scoreCourant) {
+                    i = 0; // Réinitialiser le compteur si le score s'améliore ou reste inchangé
+                    scoreCourant = nouveauScore;
+                } else {
+                    i++; // Incrémenter le compteur sinon
+                    retirerRecharge(ville); // Annuler la recharge pour revenir à l'état précédent
+                }
+            } else {
+                break; // Arrêter si aucune ville n'est disponible
             }
         }
     }
+
+
+    /**
+     * Choisi la ville optimale à recharger en fonction de l'impact sur le score.
+     *
+     * @return La ville optimale.
+     */
+    private Ville choisirVilleOptimale() {
+        Ville villeOptimale = null;
+        int impactMin = Integer.MAX_VALUE;
+        
+        // Parcourir toutes les villes dans la communauté
+        for (Ville ville : villes) {
+            // Vérifier si la ville n'a pas de zone de recharge et n'est pas marquée comme problématique
+            if (!ville.getzoneDeRecharge() && !isProblematicCity(ville)) {
+                recharge(ville.getNom()); // Simuler la recharge temporairement
+                int impactSurScore = score() - scoreCourant;
+                // Choisir la ville avec le plus petit impact sur le score
+                if (impactSurScore < impactMin) {
+                    impactMin = impactSurScore;
+                    villeOptimale = ville;
+                }
+
+                retirerRecharge(ville); // Annuler la recharge temporaire
+
+                // Si l'impact est toujours zéro, marquer la ville comme problématique
+                if (impactSurScore == 0) {
+                    markAsProblematicCity(ville);
+                }
+            }
+            // Retirer la recharge si la ville en a une
+            if (ville.getzoneDeRecharge()) {
+                retirerRecharge(ville);
+            }
+        }
+
+        return villeOptimale;
+    }
+
+    
+    // Vérifier si une ville est marquée comme problématique
+    private boolean isProblematicCity(Ville ville) {
+        return problematicCities.contains(ville);
+    }
+    // Marquer une ville comme problématique
+    private void markAsProblematicCity(Ville ville) {
+        problematicCities.add(ville);
+    }
+
 
     /**
      * Vérifie si la ville est reliée à une borne de recharge via au moins une route
