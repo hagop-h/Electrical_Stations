@@ -13,8 +13,8 @@ public class CommunauteAgglomeration {
     private Set<Route> routes; // Ensemble de routes entre les villes
     private List<ZoneRecharge> zonesRecharge; // Liste de zones de recharge présentes dans une communauté
     private Graphe graphe; // Graph représentant la connectivité entre les villes
-    private int scoreCourant; // Pour algorithme optimale
-    private Set<Ville> problematicCities = new HashSet<>(); // Pour choisir ville optimale
+    private int scoreCourant; // Score actuel utilisé dans l'algorithme optimal
+    private Set<Ville> problematicCities; // Ensemble de villes problématiques à considérer lors du choix de la ville optimale
     
     /**
      * Constructeur de la classe CommunauteAgglomeration
@@ -25,6 +25,17 @@ public class CommunauteAgglomeration {
         routes = new HashSet<>();
         zonesRecharge = new ArrayList<>();
         graphe = new Graphe();
+        scoreCourant = 0;
+        problematicCities = new HashSet<>();
+    }
+
+    /**
+     * Obtient la liste des objets Charger
+     *
+     * @return Une liste d'objets Charger
+     */
+    public List<ZoneRecharge> getZonesRecharge() {
+        return zonesRecharge; // Retourne la liste des objets Charger
     }
 
     /**
@@ -459,9 +470,9 @@ public class CommunauteAgglomeration {
     }
 
     /**
-     * Charge une communauté à partir d'un fichier
+     * Charge une communauté à partir d'un fichier contenant les informations des villes, des routes, et des recharges.
      *
-     * @param cheminFichier Chemin du fichier contenant les informations de la communauté
+     * @param cheminFichier Le chemin du fichier contenant les informations de la communauté.
      */
     public void chargerCommunaute(String cheminFichier) {
         try (Scanner scanner = new Scanner(new File(cheminFichier))) {
@@ -474,23 +485,23 @@ public class CommunauteAgglomeration {
                     String[] elements = ligne.split("[()]");
                     // Vérifier s'il y a au moins deux éléments
                     if (elements.length >= 2) {
-                    	boolean test = true;
-                    	// Extraire le nom de la ville
+                        boolean test = true;
+                        // Extraire le nom de la ville
                         String nomVille = elements[1].trim();
                         // Créer une nouvelle ville et l'ajoute à la liste des villes
                         Ville ville = new Ville(nomVille);
-                        for(Ville v : villes) {
-                        	if(v.getNom().equals(ville.getNom())) {
-                        		test=false;
-                        	}
+                        for (Ville v : villes) {
+                            if (v.getNom().equals(ville.getNom())) {
+                                test = false;
+                                break;
+                            }
                         }
-                        if(test) {
-                        	villes.add(ville);
-                        	// Ajoute également la ville au graphe
-                        	ajouterVille(ville);
-                        }
-                        else {
-                        	System.out.println("Ville existe déjà !");
+                        if (test) {
+                            villes.add(ville);
+                            // Ajouter également la ville au graphe
+                            ajouterVille(ville);
+                        } else {
+                            System.out.println("Ville existe déjà !");
                         }
                     }
                 }
@@ -528,6 +539,7 @@ public class CommunauteAgglomeration {
         }
     }
 
+
     /**
      * Vérifie si une ville contient une zone de recharge
      *
@@ -562,59 +574,51 @@ public class CommunauteAgglomeration {
     }
 
     /**
-     * Résout automatiquement le problème en utilisant un algorithme itératif
-     * Choisi aléatoirement une ville, la recharge si elle ne l'est pas, et évalue le score
-     * Répète le processus jusqu'à atteindre le nombre d'itérations spécifié
-     *
-     * @param k Le nombre d'itérations maximum.
+     * Résout automatiquement le problème d'optimisation
+     * L'algorithme vise à améliorer le score en rechargeant sélectivement des villes
      */
-    public void resoudreAutomatiquementAlgo2() {
+    public void resoudreAutomatiquement() {
         int i = 0; // Compteur d'itérations
-        scoreCourant = score(); // Initialiser scoreCourant
-        int k=1;
+        int k = 1; // Paramètre de contrôle pour le nombre maximal d'itérations
+        scoreCourant = score(); // Initialiser scoreCourant avec le score actuel
         while (i < k) {
-            Ville ville = choisirVilleOptimale(); // Choix de la ville optimale à recharger
+            Ville ville = choisirVilleOptimale(); // Sélectionner la ville optimale à recharger
             if (ville != null) {
-                recharge(ville.getNom()); // Recharger la ville
-                int nouveauScore = score(); // Évaluer le nouveau score
-
+                recharge(ville.getNom()); // Recharger la ville sélectionnée
+                int nouveauScore = score(); // Évaluer le nouveau score après la recharge
                 if (nouveauScore <= scoreCourant) {
                     i = 0; // Réinitialiser le compteur si le score s'améliore ou reste inchangé
-                    scoreCourant = nouveauScore;
+                    scoreCourant = nouveauScore; // Mettre à jour le score courant
                 } else {
-                    i++; // Incrémenter le compteur sinon
+                    i++; // Incrémenter le compteur si le score n'améliore pas
                     retirerRecharge(ville); // Annuler la recharge pour revenir à l'état précédent
                 }
             } else {
-                break; // Arrêter si aucune ville n'est disponible
+                break; // Arrêter si aucune ville disponible n'est trouvée
             }
         }
     }
 
-
     /**
-     * Choisi la ville optimale à recharger en fonction de l'impact sur le score.
+     * Choisi la ville optimale pour la recharge en fonction de son impact sur le score actuel
      *
-     * @return La ville optimale.
+     * @return La ville optimale à recharger ou null s'il n'y a aucune ville disponible
      */
     private Ville choisirVilleOptimale() {
-        Ville villeOptimale = null;
-        int impactMin = Integer.MAX_VALUE;
-        
+        Ville villeOptimale = null; // Ville à recharger de manière optimale
+        int impactMin = Integer.MAX_VALUE; // Initialiser l'impact minimal sur le score
         // Parcourir toutes les villes dans la communauté
         for (Ville ville : villes) {
             // Vérifier si la ville n'a pas de zone de recharge et n'est pas marquée comme problématique
             if (!ville.getzoneDeRecharge() && !isProblematicCity(ville)) {
-                recharge(ville.getNom()); // Simuler la recharge temporairement
+                recharge(ville.getNom()); // Simuler la recharge temporairement pour évaluer l'impact sur le score
                 int impactSurScore = score() - scoreCourant;
                 // Choisir la ville avec le plus petit impact sur le score
                 if (impactSurScore < impactMin) {
                     impactMin = impactSurScore;
                     villeOptimale = ville;
                 }
-
                 retirerRecharge(ville); // Annuler la recharge temporaire
-
                 // Si l'impact est toujours zéro, marquer la ville comme problématique
                 if (impactSurScore == 0) {
                     markAsProblematicCity(ville);
@@ -625,20 +629,27 @@ public class CommunauteAgglomeration {
                 retirerRecharge(ville);
             }
         }
-
         return villeOptimale;
     }
 
-    
-    // Vérifier si une ville est marquée comme problématique
+    /**
+     * Vérifie si une ville est marquée comme problématique
+     *
+     * @param ville La ville à vérifier
+     * @return vrai si la ville est marquée comme problématique, sinon faux
+     */
     private boolean isProblematicCity(Ville ville) {
         return problematicCities.contains(ville);
     }
-    // Marquer une ville comme problématique
+
+    /**
+     * Marque une ville comme problématique en l'ajoutant à la liste des villes problématiques
+     *
+     * @param ville La ville à marquer comme problématique
+     */
     private void markAsProblematicCity(Ville ville) {
         problematicCities.add(ville);
     }
-
 
     /**
      * Vérifie si la ville est reliée à une borne de recharge via au moins une route

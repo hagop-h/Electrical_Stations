@@ -28,7 +28,7 @@ public class Main {
         int choixMenu;
         do {
             // Afficher le score actuel et les informations sur les zones de recharge
-            System.out.println("Score : "+communaute.score());
+            System.out.println("\nScore : "+communaute.score());
             communaute.afficherVillesAvecOuSansRecharge();
             afficherMenuPrincipal();
             choixMenu = lireEntier(scanner);
@@ -40,7 +40,7 @@ public class Main {
                     break;
                 case 2:
                     // Option 2 : Résoudre automatiquement avec l'Algorithme 2
-                    communaute.resoudreAutomatiquementAlgo2();
+                    communaute.resoudreAutomatiquement();
                     break;
                 case 3:
                     // Option 3 : Sauvegarder
