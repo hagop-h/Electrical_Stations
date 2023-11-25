@@ -1,5 +1,7 @@
 # Electrical_Stations (Gestion des zones de recharge dans une communauté d'agglomération)
 
+![Logo](image.jpg)
+
 * [Introdution](#introduction)
 * [Installation](#installation)
 * [Phase 1 (produit initial)](#phase-1-produit-initial)
