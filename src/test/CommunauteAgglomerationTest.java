@@ -209,7 +209,7 @@ public class CommunauteAgglomerationTest {
         // Act
         communaute.ajouterZoneRechargeMenu(new Scanner("VilleA\n"));
         // Assert
-        assertTrue(communaute.getZonesRecharge().contains(new ZoneRecharge(villeA)));
+        assertTrue(communaute.trouverVilleParNom("VilleA").getzoneDeRecharge());
     }
 
     @Test
