@@ -1,9 +1,7 @@
 package application;
 
 import phase2.*;
-import java.io.*;
-import java.util.*;
-import java.util.stream.*;
+
 
 /**
  * La classe CommunauteAgglomeration représente une communauté d'agglomération comprenant des villes, des routes et des zones de recharge
