@@ -90,5 +90,5 @@ public class Main {
                 scanner.nextLine(); // Pour consommer l'entrée restante
             }
         }
-    }
+    } 
 }

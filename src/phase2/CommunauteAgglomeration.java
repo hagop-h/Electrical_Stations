@@ -775,7 +775,7 @@ public class CommunauteAgglomeration {
                         if (elements.length >= 2) {
                             // Extraire les noms des villes de départ et d'arrivée
                             String nomVilleA = elements[1];
-                            String nomVilleB = elements[2].substring(1);
+                            String nomVilleB = elements[2];
                             // Ajoute une route entre les deux villes
                             ajouterRoute(nomVilleA, nomVilleB);
                         }
