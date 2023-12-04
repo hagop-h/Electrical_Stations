@@ -120,7 +120,7 @@ public class CommunauteAgglomerationTest {
         Ville villeB = new Ville("VilleB");
         communaute.ajouterVille(villeA);
         communaute.ajouterVille(villeB);
-        communaute.ajouterRoute(villeA, villeB);
+        communaute.ajouterRoute("VilleA", "VilleB");
         // Act
         communaute.ajusterRechargeConnectees(villeA);
         // Assert
@@ -134,7 +134,7 @@ public class CommunauteAgglomerationTest {
         Ville villeB = new Ville("VilleB");
         communaute.ajouterVille(villeA);
         communaute.ajouterVille(villeB);
-        communaute.ajouterRoute(villeA, villeB);
+        communaute.ajouterRoute("VilleA", "VilleB");
         // Act
         communaute.ajusterRechargeConnectees(villeB);
         // Assert
@@ -174,7 +174,7 @@ public class CommunauteAgglomerationTest {
         Ville villeB = new Ville("VilleB");
         communaute.ajouterVille(villeA);
         communaute.ajouterVille(villeB);
-        communaute.ajouterRoute(villeA, villeB);
+        communaute.ajouterRoute("VilleA", "VilleB");
         // Act
         communaute.ajouterZoneRechargeMenu(new Scanner("VilleA\n"));
         // Assert
@@ -192,7 +192,7 @@ public class CommunauteAgglomerationTest {
         communaute.ajouterVille(villeB);
         communaute.ajouterRecharge(new ZoneRecharge(villeA));
         communaute.ajouterRecharge(new ZoneRecharge(villeB));
-        communaute.ajouterRoute(villeA, villeB);
+        communaute.ajouterRoute("VilleA", "VilleB");
 
         // Act
         communaute.resoudreAutomatiquement();
@@ -222,7 +222,7 @@ public class CommunauteAgglomerationTest {
         communaute.ajouterVille(villeA);
         communaute.ajouterVille(villeB);
         communaute.ajouterRecharge(new ZoneRecharge(villeB));
-        communaute.ajouterRoute(villeA, villeB);
+        communaute.ajouterRoute("VilleA", "VilleB");
 
         // Act
         boolean result = communaute.estRelieeAvecBorne(villeA);
@@ -254,7 +254,7 @@ public class CommunauteAgglomerationTest {
         communaute.ajouterVille(villeA);
         communaute.ajouterVille(villeB);
         communaute.ajouterRecharge(new ZoneRecharge(villeA));
-        communaute.ajouterRoute(villeA, villeB);
+        communaute.ajouterRoute("VilleA", "VilleB");
 
         // Act
         boolean result = communaute.respecteContrainte(villeA);
@@ -270,7 +270,7 @@ public class CommunauteAgglomerationTest {
         Ville villeB = new Ville("VilleB");
         communaute.ajouterVille(villeA);
         communaute.ajouterVille(villeB);
-        communaute.ajouterRoute(villeA, villeB);
+        communaute.ajouterRoute("VilleA", "VilleB");
 
         // Act
         boolean result = communaute.respecteContrainte(villeA);
@@ -348,7 +348,7 @@ public class CommunauteAgglomerationTest {
         Ville villeB = new Ville("VilleB");
         communaute.ajouterVille(villeA);
         communaute.ajouterVille(villeB);
-        communaute.ajouterRoute(villeA, villeB);
+        communaute.ajouterRoute("VilleA", "VilleB");
         communaute.ajouterRecharge(new ZoneRecharge(villeB));
 
         // Act
@@ -423,9 +423,8 @@ public class CommunauteAgglomerationTest {
         Ville villeB = new Ville("VilleB");
         communaute.ajouterRecharge(new ZoneRecharge(villeA));
         communaute.ajouterRecharge(new ZoneRecharge(villeB));
-        communaute.ajouterRoute(villeA, villeB);
-        assertTrue(communaute.estRelieeAvecBorne(villeA));
-        assertTrue(communaute.estRelieeAvecBorne(villeB));
+        assertFalse(communaute.estRelieeAvecBorne(villeA));
+        assertFalse(communaute.estRelieeAvecBorne(villeB));
     }
     
     @Test

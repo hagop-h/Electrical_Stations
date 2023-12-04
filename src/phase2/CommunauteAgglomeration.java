@@ -954,7 +954,7 @@ public class CommunauteAgglomeration {
         } catch (NullPointerException e) {
             // Gérer spécifiquement une éventuelle NullPointerException
             System.out.println("NullPointerException lors de la vérification si la ville est problématique : " + e.getMessage());
-            return false; // Retourner faux en cas d'erreur
+            return false; // Retourner faux en cas d'erreur 
         }
     }
 
