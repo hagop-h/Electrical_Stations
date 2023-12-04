@@ -202,21 +202,23 @@ public class CommunauteAgglomeration {
      * @throws NullPointerException Si la liste de villes ou la méthode ajouterRoute n'est pas correctement initialisée
      */
     public void ajouterRoute(String nomVilleA, String nomVilleB) {
-        try {
             // Rechercher des objets Ville correspondants aux noms fournis
             Ville villeA = trouverVilleParNom(nomVilleA);
             Ville villeB = trouverVilleParNom(nomVilleB);
             // Vérification de l'existence des deux villes
-            if (villeA != null && villeB != null) {
-                ajouterRoute(villeA, villeB); // Ajouter la route entre les deux villes
-            } else {
-                System.out.println("Villes non trouvées. Veuillez réessayer."); // Affichage d'un message d'erreur si l'une ou les deux villes ne sont pas trouvées
+            try {
+                if (villeA != null && villeB != null) {
+                    Route route = new Route(villeA, villeB); // Création d'une nouvelle route
+                    routes.add(route); // Ajout de la route à la liste des routes
+                    graphe.addEdge(villeA.getNom(), villeB.getNom()); // Mise à jour de la représentation du graphe
+                } else {
+                    System.out.println("Villes non trouvées. Veuillez réessayer.");
+                }
+            } catch (NullPointerException e) {
+                // Gérer spécifiquement une éventuelle NullPointerException
+                System.out.println("NullPointerException lors de l'ajout de route : " + e.getMessage());
             }
-        } catch (NullPointerException e) {
-            // Gérer l'exception si la liste de villes ou la méthode ajouterRoute n'est pas correctement initialisée
-            System.out.println("Erreur lors de l'ajout de la route. Veuillez vérifier la configuration de la communauté d'agglomération.");
-        }
-    }
+	}
 
     /**
      * Vérifie si la communauté contient une route entre deux villes spécifiées
@@ -531,28 +533,7 @@ public class CommunauteAgglomeration {
         }
     }
 
-    /**
-     * Ajoute une nouvelle route entre deux villes spécifiées, met à jour la liste des routes
-     * et la représentation du graphe associé
-     *
-     * @param villeA Première ville de la route
-     * @param villeB Deuxième ville de la route
-     * @throws NullPointerException si la liste de routes ou la représentation du graphe n'est pas correctement initialisée
-     */
-    public void ajouterRoute(Ville villeA, Ville villeB) {
-        try {
-            if (villeA != null && villeB != null) {
-                Route route = new Route(villeA, villeB); // Création d'une nouvelle route
-                routes.add(route); // Ajout de la route à la liste des routes
-                graphe.addEdge(villeA.getNom(), villeB.getNom()); // Mise à jour de la représentation du graphe
-            } else {
-                System.out.println("Villes non trouvées. Veuillez réessayer.");
-            }
-        } catch (NullPointerException e) {
-            // Gérer spécifiquement une éventuelle NullPointerException
-            System.out.println("NullPointerException lors de l'ajout de route : " + e.getMessage());
-        }
-    }
+    
 
     /**
      * Ajoute une nouvelle ville à la communauté d'agglomération
@@ -1069,7 +1050,7 @@ public class CommunauteAgglomeration {
             // Gérer spécifiquement une éventuelle NullPointerException
             System.out.println("NullPointerException lors de la vérification de la contrainte d'accessibilité : " + e.getMessage());
             return false; // Retourner faux en cas d'erreur
-        }
+        } 
     }
 
     /**
