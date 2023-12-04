@@ -121,7 +121,7 @@ public class Main extends Application {
     private Button createSolveAutomaticallyButton(Stage primaryStage, Label scoreLabel, Label avecRechargeLabel, Label rechargéesLabel, Label sansRechargeLabel) {
         Button solveAutomaticallyButton = new Button("Résoudre automatiquement");
         solveAutomaticallyButton.setOnAction(e -> {
-            communaute.resoudreAutomatiquementAlgo2();
+            communaute.resoudreAutomatiquement();
             scoreLabel.setText("Score: " + communaute.score());
             updateStatusLabel(avecRechargeLabel, rechargéesLabel, sansRechargeLabel);
         });
