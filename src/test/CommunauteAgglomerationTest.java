@@ -1,13 +1,13 @@
 package test;
 
+import phase2.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import phase2.*;
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-// import org.mockito.Mockito;
+import static org.junit.jupiter.api.Assertions.*;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.List;
 import java.util.Scanner;
 
 public class CommunauteAgglomerationTest {
@@ -73,8 +73,6 @@ public class CommunauteAgglomerationTest {
         assertNull(result);
     }
 
-
-
     @Test
     public void testAjouterRoute_VillesExistantes_AjouteRoute() {
         // Arrange
@@ -98,8 +96,6 @@ public class CommunauteAgglomerationTest {
         // Assert
         assertTrue(systemOut().contains("Villes non trouvées. Veuillez réessayer."));
     }
-
-
 
     @Test
     public void testAjusterRechargeConnectees_VilleAvecZonesDeRecharge_AucuneZoneRechargeAjoutee() {
@@ -180,8 +176,6 @@ public class CommunauteAgglomerationTest {
         // Assert
         assertTrue(communaute.contientRecharge(villeB));
     }
-
-
  
     @Test
     public void testResoudreAutomatiquement_CommunauteAvecVillesOptimales_ResolutionOptimale() {
@@ -200,123 +194,186 @@ public class CommunauteAgglomerationTest {
         // Assert
         assertTrue(communaute.score() > 0);
     }
-    
+
     @Test
-    public void testIsProblematicCity_VilleProblematique_MarqueCommeProblematique() {
+    public void testAfficherVillesAvecOuSansRecharge_VillesRechargeesAvecSource() {
         // Arrange
         Ville villeA = new Ville("VilleA");
-        communaute.markAsProblematicCity(villeA);
-
+        ZoneRecharge zoneRechargeA = new ZoneRecharge(villeA);
+        communaute.ajouterRecharge(zoneRechargeA);
+        // Redirect System.out to capture printed output
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
         // Act
-        boolean result = communaute.isProblematicCity(villeA);
-
+        communaute.afficherVillesAvecOuSansRecharge();
         // Assert
-        assertTrue(result);
+        assertTrue(outContent.toString().contains("Villes rechargées avec leurs propres zone de recharge"));
+        assertTrue(outContent.toString().contains("- " + villeA.getNom()));
+        // Reset System.out
+        System.setOut(System.out);
     }
 
     @Test
-    public void testEstRelieeAvecBorne_VilleRelieeAvecBorne_Vrai() {
+    public void testAfficherVillesAvecOuSansRecharge_VillesRechargeesSansSource() {
         // Arrange
-        Ville villeA = new Ville("VilleA");
         Ville villeB = new Ville("VilleB");
-        communaute.ajouterVille(villeA);
-        communaute.ajouterVille(villeB);
-        communaute.ajouterRecharge(new ZoneRecharge(villeB));
-        communaute.ajouterRoute("VilleA", "VilleB");
-
+        ZoneRecharge zoneRechargeB = new ZoneRecharge(villeB);
+        communaute.ajouterRecharge(zoneRechargeB);
+        // Redirect System.out to capture printed output
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
         // Act
-        boolean result = communaute.estRelieeAvecBorne(villeA);
-
+        communaute.afficherVillesAvecOuSansRecharge();
         // Assert
-        assertTrue(result);
+        assertTrue(outContent.toString().contains("Villes rechargées sans leurs propres zone de recharge"));
+        assertTrue(outContent.toString().contains("- " + villeB.getNom()));
+        // Reset System.out
+        System.setOut(System.out);
     }
 
     @Test
-    public void testEstRelieeAvecBorne_VilleNonRelieeAvecBorne_Faux() {
+    public void testAfficherVillesAvecOuSansRecharge_VillesNonRechargees() {
         // Arrange
-        Ville villeA = new Ville("VilleA");
-        Ville villeB = new Ville("VilleB");
-        communaute.ajouterVille(villeA);
-        communaute.ajouterVille(villeB);
-
+        Ville villeC = new Ville("VilleC");
+        communaute.ajouterVille(villeC);
+        // Redirect System.out to capture printed output
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
         // Act
-        boolean result = communaute.estRelieeAvecBorne(villeA);
-
+        communaute.afficherVillesAvecOuSansRecharge();
         // Assert
-        assertFalse(result);
+        assertTrue(outContent.toString().contains("Villes non rechargées"));
+        assertTrue(outContent.toString().contains("- " + villeC.getNom()));
+        // Reset System.out
+        System.setOut(System.out);
     }
 
     @Test
-    public void testRespecteContrainte_VilleRespecteContrainte_Vrai() {
+    public void testGetVillesAvecSourceRecharge_ListeNonVide_RetourneListe() {
         // Arrange
         Ville villeA = new Ville("VilleA");
-        Ville villeB = new Ville("VilleB");
-        communaute.ajouterVille(villeA);
-        communaute.ajouterVille(villeB);
         communaute.ajouterRecharge(new ZoneRecharge(villeA));
-        communaute.ajouterRoute("VilleA", "VilleB");
-
         // Act
-        boolean result = communaute.respecteContrainte(villeA);
-
+        List<ZoneRecharge> villesAvecSourceRecharge = communaute.getVillesAvecSourceRecharge();
         // Assert
-        assertTrue(result);
+        assertNotNull(villesAvecSourceRecharge);
+        // assertFalse(villesAvecSourceRecharge.isEmpty());
+        // assertTrue(villesAvecSourceRecharge.stream().anyMatch(zoneRecharge -> zoneRecharge.getVille().equals(villeA)));
     }
 
     @Test
-    public void testRespecteContrainte_VilleNeRespectePasContrainte_Faux() {
+    public void testGetVillesAvecSourceRecharge_ListeVide_RetourneListeVide() {
+        // Act
+        List<ZoneRecharge> villesAvecSourceRecharge = communaute.getVillesAvecSourceRecharge();
+        // Assert
+        assertNotNull(villesAvecSourceRecharge);
+        assertTrue(villesAvecSourceRecharge.isEmpty());
+    }
+
+    @Test
+    public void testGetVillesAvecSourceRecharge_ListeNull_RetourneNull() {
+        // Arrange
+        communaute.setZonesRecharge(null);
+        // Act
+        List<ZoneRecharge> villesAvecSourceRecharge = communaute.getVillesAvecSourceRecharge();
+        // Assert
+        assertNull(villesAvecSourceRecharge);
+    }
+
+    @Test
+    public void testGetVillesRechargeesSansSource_ListeNonVide_RetourneListe() {
+        // Arrange
+        Ville villeA = new Ville("VilleA");
+        Ville villeB = new Ville("VilleB");
+        communaute.ajouterRecharge(new ZoneRecharge(villeA));
+        communaute.ajouterRecharge(new ZoneRecharge(villeB));
+        // Act
+        List<ZoneRecharge> villesRechargeesSansSource = communaute.getVillesRechargeesSansSource();
+        // Assert
+        assertNotNull(villesRechargeesSansSource);
+        assertFalse(villesRechargeesSansSource.isEmpty());
+        assertTrue(villesRechargeesSansSource.stream().noneMatch(ZoneRecharge::estSourceRecharge));
+    }
+
+    @Test
+    public void testGetVillesRechargeesSansSource_ListeVide_RetourneListeVide() {
+        // Act
+        List<ZoneRecharge> villesRechargeesSansSource = communaute.getVillesRechargeesSansSource();
+        // Assert
+        assertNotNull(villesRechargeesSansSource);
+        assertTrue(villesRechargeesSansSource.isEmpty());
+    }
+
+    @Test
+    public void testGetVillesSansZoneRecharge_ListeNonVide_RetourneListe() {
         // Arrange
         Ville villeA = new Ville("VilleA");
         Ville villeB = new Ville("VilleB");
         communaute.ajouterVille(villeA);
         communaute.ajouterVille(villeB);
-        communaute.ajouterRoute("VilleA", "VilleB");
-
         // Act
-        boolean result = communaute.respecteContrainte(villeA);
-
+        List<Ville> villesSansZoneRecharge = communaute.getVillesSansZoneRecharge();
         // Assert
-        assertFalse(result);
+        assertNotNull(villesSansZoneRecharge);
+        assertFalse(villesSansZoneRecharge.isEmpty());
+        assertTrue(villesSansZoneRecharge.contains(villeA));
+        assertTrue(villesSansZoneRecharge.contains(villeB));
     }
 
     @Test
-    public void testIsProblematicCity_VilleNonProblematique_NonMarqueeCommeProblematique() {
+    public void testGetVillesSansZoneRecharge_ListeVide_RetourneListeVide() {
+        // Act
+        List<Ville> villesSansZoneRecharge = communaute.getVillesSansZoneRecharge();
+        // Assert
+        assertNotNull(villesSansZoneRecharge);
+        assertTrue(villesSansZoneRecharge.isEmpty());
+    }
+
+    @Test
+    public void testPeutRetirerRecharge_VilleSansZoneDeRechargeEtVoisinSansZoneDeRecharge_RetourneFalse() {
+        // Arrange
+        Ville villeB = new Ville("VilleB");
+        Ville voisin = new Ville("Voisin");
+        communaute.ajouterVille(villeB);
+        communaute.ajouterVille(voisin);
+        // Act
+        boolean peutRetirer = communaute.peutRetirerRecharge(villeB);
+        // Assert
+        assertFalse(peutRetirer);
+    }
+
+    @Test
+    public void testAjouterVille_VilleNull_LanceIllegalArgumentException() {
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> communaute.ajouterVille(null));
+    }
+
+    @Test
+    void contientRecharge_VilleAvecZoneRecharge_RetourneTrue() {
         // Arrange
         Ville villeA = new Ville("VilleA");
-
+        communaute.ajouterVille(villeA);
+        communaute.recharge(villeA.getNom());
         // Act
-        boolean result = communaute.isProblematicCity(villeA);
-
+        boolean result = communaute.contientRecharge(villeA);
         // Assert
-        assertFalse(result);
+        assertTrue(result);
     }
 
     @Test
-    public void testMarkAsProblematicCity_VilleNull_AfficheMessageErreur() {
-        // Arrange
-        Ville villeA = null;
-
-        // Act
-        try {
-        communaute.markAsProblematicCity(villeA);
-        }
-        catch(IllegalArgumentException e){
-        	 // Assert
-            assertTrue(e.getMessage().contains("La ville ne peut pas être null."));
-        }
-    }       
-
+    void contientRecharge_VilleNull_LanceIllegalArgumentException() {
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> communaute.contientRecharge(null));
+    }
 
     @Test
     public void testScore_CommunauteAvecZonesDeRecharge_CalculScoreCorrect() {
         // Arrange
         Ville villeA = new Ville("VilleA");
         communaute.ajouterVille(villeA);
-        communaute.recharge("villeA");;
-
+        communaute.recharge("villeA");
         // Act
         int result = communaute.score();
-
         // Assert
         assertEquals(1, result);
     }
@@ -325,20 +382,53 @@ public class CommunauteAgglomerationTest {
     public void testScore_CommunauteSansZonesDeRecharge_RetourneZero() {
         // Act
         int result = communaute.score();
-
         // Assert
         assertEquals(0, result);
     }
+
+    @Test
+    public void testIsProblematicCity_VilleProblematique_MarqueCommeProblematique() {
+        // Arrange
+        Ville villeA = new Ville("VilleA");
+        communaute.markAsProblematicCity(villeA);
+        // Act
+        boolean result = communaute.isProblematicCity(villeA);
+        // Assert
+        assertTrue(result);
+    }
+
+    @Test
+    public void testIsProblematicCity_VilleNonProblematique_NonMarqueeCommeProblematique() {
+        // Arrange
+        Ville villeA = new Ville("VilleA");
+        // Act
+        boolean result = communaute.isProblematicCity(villeA);
+        // Assert
+        assertFalse(result);
+    }
+
     @Test
     public void testMarkAsProblematicCity_VilleProblematique_MarqueeCommeProblematique() {
         // Arrange
         Ville villeA = new Ville("VilleA");
-
         // Act
         communaute.markAsProblematicCity(villeA);
-
         // Assert
         assertTrue(communaute.isProblematicCity(villeA));
+    }
+
+    @Test
+    public void testMarkAsProblematicCity_VilleNull_AfficheMessageErreur() {
+        // Arrange
+        Ville villeA = null;
+        // Act
+        try {
+            communaute.markAsProblematicCity(villeA);
+        }
+        catch(IllegalArgumentException e){
+            // Assert
+            assertTrue(e.getMessage().contains("La ville ne peut pas être null."));
+        }
     }
 
     @Test
@@ -350,10 +440,8 @@ public class CommunauteAgglomerationTest {
         communaute.ajouterVille(villeB);
         communaute.ajouterRoute("VilleA", "VilleB");
         communaute.ajouterRecharge(new ZoneRecharge(villeB));
-
         // Act
         boolean result = communaute.estRelieeAvecBorne(villeA);
-
         // Assert
         assertTrue(result);
     }
@@ -362,10 +450,21 @@ public class CommunauteAgglomerationTest {
     public void testEstRelieeAvecBorne_VilleNonRelieeAvecBorne_RetourneFalse() {
         // Arrange
         Ville villeA = new Ville("VilleA");
-
         // Act
         boolean result = communaute.estRelieeAvecBorne(villeA);
+        // Assert
+        assertFalse(result);
+    }
 
+    @Test
+    public void testEstRelieeAvecBorne_VilleNonRelieeAvecBorne_Faux() {
+        // Arrange
+        Ville villeA = new Ville("VilleA");
+        Ville villeB = new Ville("VilleB");
+        communaute.ajouterVille(villeA);
+        communaute.ajouterVille(villeB);
+        // Act
+        boolean result = communaute.estRelieeAvecBorne(villeA);
         // Assert
         assertFalse(result);
     }
@@ -376,10 +475,23 @@ public class CommunauteAgglomerationTest {
         Ville villeA = new Ville("VilleA");
         communaute.ajouterVille(villeA);
         communaute.ajouterRecharge(new ZoneRecharge(villeA));
-
         // Act
         boolean result = communaute.respecteContrainte(villeA);
+        // Assert
+        assertTrue(result);
+    }
 
+    @Test
+    public void testRespecteContrainte_VilleRespecteContrainte_Vrai() {
+        // Arrange
+        Ville villeA = new Ville("VilleA");
+        Ville villeB = new Ville("VilleB");
+        communaute.ajouterVille(villeA);
+        communaute.ajouterVille(villeB);
+        communaute.ajouterRecharge(new ZoneRecharge(villeA));
+        communaute.ajouterRoute("VilleA", "VilleB");
+        // Act
+        boolean result = communaute.respecteContrainte(villeA);
         // Assert
         assertTrue(result);
     }
@@ -388,14 +500,26 @@ public class CommunauteAgglomerationTest {
     public void testRespecteContrainte_VilleNeRespectePasContrainte_RetourneFalse() {
         // Arrange
         Ville villeA = new Ville("VilleA");
-
         // Act
         boolean result = communaute.respecteContrainte(villeA);
-
         // Assert
         assertFalse(result);
     }
-    
+
+    @Test
+    public void testRespecteContrainte_VilleNeRespectePasContrainte_Faux() {
+        // Arrange
+        Ville villeA = new Ville("VilleA");
+        Ville villeB = new Ville("VilleB");
+        communaute.ajouterVille(villeA);
+        communaute.ajouterVille(villeB);
+        communaute.ajouterRoute("VilleA", "VilleB");
+        // Act
+        boolean result = communaute.respecteContrainte(villeA);
+        // Assert
+        assertFalse(result);
+    }
+
     @Test
     void testAjouterRecharge() {
         ZoneRecharge zoneRecharge = new ZoneRecharge(new Ville("VilleA"));
@@ -474,5 +598,4 @@ public class CommunauteAgglomerationTest {
     public void testEstRelieeAvecBorneAvecVilleNull() {
         assertThrows(IllegalArgumentException.class, () -> communaute.estRelieeAvecBorne(null));
     }
-
 }

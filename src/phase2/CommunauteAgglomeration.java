@@ -46,6 +46,21 @@ public class CommunauteAgglomeration {
     }
 
     /**
+     * Définit la liste des zones de recharge
+     *
+     * @param zonesRecharge La nouvelle liste des zones de recharge
+     * @throws NullPointerException Si la liste des zones de recharge est nulle
+     */
+    public void setZonesRecharge(List<ZoneRecharge> zonesRecharge) {
+        try {
+            this.zonesRecharge = zonesRecharge;
+        } catch (NullPointerException e) {
+            // Gérer spécifiquement une éventuelle NullPointerException
+            System.out.println("NullPointerException lors de la modification de l'ensemble des routes : " + e.getMessage());
+        }
+    }
+
+    /**
      * Ajoute une zone de recharge à la liste des zones de recharge de la communauté
      *
      * @param zoneRecharge La zone de recharge à ajouter
