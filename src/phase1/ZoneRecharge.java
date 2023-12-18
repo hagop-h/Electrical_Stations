@@ -4,7 +4,7 @@ package phase1;
  * Classe représentant une zone de recharge associée à une ville
  */
 public class ZoneRecharge {
-    private Ville ville; // La ville associée à la zone de recharge
+    private final Ville ville; // La ville associée à la zone de recharge
 
     /**
      * Constructeur de la classe ZoneRecharge

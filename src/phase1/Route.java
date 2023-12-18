@@ -4,8 +4,8 @@ package phase1;
  * Classe représentant une route entre deux villes
  */
 public class Route {
-    private Ville villeA; // La première ville de la route
-    private Ville villeB; // La deuxième ville de la route
+    private final Ville villeA; // La première ville de la route
+    private final Ville villeB; // La deuxième ville de la route
 
     /**
      * Constructeur de la classe Route.

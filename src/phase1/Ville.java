@@ -5,7 +5,7 @@ package phase1;
  */
 public class Ville {
 
-    private NomVille nom; // Le nom de la ville
+    private final NomVille nom; // Le nom de la ville
     private boolean sourceVille = false; // Indique si la ville est une source de recharge
 
     /**

@@ -9,7 +9,7 @@ import java.util.Set;
  * Classe représentant un graphe utilisant une liste d'adjacence
  */
 public class Graphe {
-    private Map<String, Set<String>> adjacencyList; // Représentation du graphe sous forme de liste d'adjacence
+    private final Map<String, Set<String>> adjacencyList; // Représentation du graphe sous forme de liste d'adjacence
 
     /**
      * Constructeur de la classe Graphe

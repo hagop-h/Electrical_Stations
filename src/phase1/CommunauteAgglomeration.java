@@ -8,10 +8,10 @@ import java.util.stream.*;
  * Gère les villes, les routes, les zones de recharge et les relations entre les villes
  */
 public class CommunauteAgglomeration {
-    private List<Ville> villes; // Une liste pour stocker les villes
-    private List<Route> routes; // Une liste pour stocker les routes
-    private List<ZoneRecharge> zonesRecharge; // Une liste pour stocker les zones de recharge
-    private Graphe graphe; // Un graphe pour représenter les relations entre les villes
+    private final List<Ville> villes; // Une liste pour stocker les villes
+    private final List<Route> routes; // Une liste pour stocker les routes
+    private final List<ZoneRecharge> zonesRecharge; // Une liste pour stocker les zones de recharge
+    private final Graphe graphe; // Un graphe pour représenter les relations entre les villes
 
     /**
      * Constructeur de la classe CommunauteAgglomeration

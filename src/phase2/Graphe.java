@@ -7,7 +7,7 @@ import java.util.*;
  * Les méthodes de cette classe permettent d'ajouter des sommets, des arêtes, de récupérer les voisins et les sommets du graphe
  */
 public class Graphe {
-    private Map<String, Set<String>> adjacencyList; // Représentation d'un graphe sous forme de liste d'adjacence
+    private final Map<String, Set<String>> adjacencyList; // Représentation d'un graphe sous forme de liste d'adjacence
 
     /**
      * Constructeur pour créer un graphe vide

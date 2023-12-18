@@ -5,7 +5,7 @@ package phase2;
  * Chaque ville a un nom et peut être associée à une zone de recharge
  */
 public class Ville {
-    private String nom; // Nom d'une ville
+    private final String nom; // Nom d'une ville
     private boolean zoneDeRecharge = false; // Pour indiquer si une ville possède une zone de recharge
 
     /**
