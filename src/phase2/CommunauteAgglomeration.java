@@ -29,6 +29,11 @@ public class CommunauteAgglomeration {
         scoreCourant = 0;
     }
 
+    public Set<Ville> getVilles() {
+        return villes;
+    }
+
+
     /**
      * Obtient la liste des objets Zones recharge
      *
@@ -76,21 +81,6 @@ public class CommunauteAgglomeration {
     }
 
     /**
-     * Modifie l'ensemble des villes de la communauté en remplaçant l'ensemble actuel par le nouvel ensemble spécifié
-     *
-     * @param villes Le nouvel ensemble de villes
-     * @throws NullPointerException Si l'ensemble de villes spécifié est null
-     */
-    public void setVilles(Set<Ville> villes) {
-        try {
-            this.villes = villes;
-        } catch (NullPointerException e) {
-            // Gérer spécifiquement une éventuelle NullPointerException
-            System.out.println("NullPointerException lors de la modification de l'ensemble des villes : " + e.getMessage());
-        }
-    }
-
-    /**
      * Modifie l'ensemble des routes de la communauté en remplaçant l'ensemble actuel par le nouvel ensemble spécifié
      *
      * @param routes Le nouvel ensemble de routes
@@ -129,7 +119,7 @@ public class CommunauteAgglomeration {
                 // Gérer spécifiquement une éventuelle IllegalArgumentException
                 System.out.println("IllegalArgumentException lors du retrait de la zone de recharge : " + e.getMessage());
             }  catch (InputMismatchException e) {
-                // Gèrer l'exception si l'entrée n'est pas un entier
+                // Gérer l'exception si l'entrée n'est pas un entier
                 System.out.println("Veuillez entrer un nombre entier.");
                 // Consommer la ligne incorrecte pour éviter une boucle infinie
                 scanner.nextLine();
@@ -217,22 +207,22 @@ public class CommunauteAgglomeration {
      * @throws NullPointerException Si la liste de villes ou la méthode ajouterRoute n'est pas correctement initialisée
      */
     public void ajouterRoute(String nomVilleA, String nomVilleB) {
-            // Rechercher des objets Ville correspondants aux noms fournis
-            Ville villeA = trouverVilleParNom(nomVilleA);
-            Ville villeB = trouverVilleParNom(nomVilleB);
-            // Vérification de l'existence des deux villes
-            try {
-                if (villeA != null && villeB != null) {
-                    Route route = new Route(villeA, villeB); // Création d'une nouvelle route
-                    routes.add(route); // Ajout de la route à la liste des routes
-                    graphe.addEdge(villeA.getNom(), villeB.getNom()); // Mise à jour de la représentation du graphe
-                } else {
-                    System.out.println("Villes non trouvées. Veuillez réessayer.");
-                }
-            } catch (NullPointerException e) {
-                // Gérer spécifiquement une éventuelle NullPointerException
-                System.out.println("NullPointerException lors de l'ajout de route : " + e.getMessage());
+        // Rechercher des objets Ville correspondants aux noms fournis
+        Ville villeA = trouverVilleParNom(nomVilleA);
+        Ville villeB = trouverVilleParNom(nomVilleB);
+        // Vérification de l'existence des deux villes
+        try {
+            if (villeA != null && villeB != null) {
+                Route route = new Route(villeA, villeB); // Création d'une nouvelle route
+                routes.add(route); // Ajout de la route à la liste des routes
+                graphe.addEdge(villeA.getNom(), villeB.getNom()); // Mise à jour de la représentation du graphe
+            } else {
+                System.out.println("Villes non trouvées. Veuillez réessayer.");
             }
+        } catch (NullPointerException e) {
+            // Gérer spécifiquement une éventuelle NullPointerException
+            System.out.println("NullPointerException lors de l'ajout de route : " + e.getMessage());
+        }
 	}
 
     /**
@@ -347,7 +337,7 @@ public class CommunauteAgglomeration {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(cheminFichier))) {
             // Sauvegarder les informations sur les villes
             for (Ville ville : villes) {
-                writer.write(ville.getNom() + " " + ville.getzoneDeRecharge());
+                writer.write(ville.getNom() + " " + ville.getZoneDeRecharge());
                 writer.newLine();
             }
             // Sauvegarder les informations sur les routes
@@ -443,7 +433,7 @@ public class CommunauteAgglomeration {
             // Parcourir de la liste des villes
             for (Ville ville : villes) {
                 // Vérification si la ville n'a pas de zone de recharge et que la zone de recharge est désactivée
-                if (!contientRecharge(ville) && !ville.getzoneDeRecharge()) {
+                if (!contientRecharge(ville) && !ville.getZoneDeRecharge()) {
                     // Ajout de la ville à la liste si elle n'est pas déjà présente
                     if (!villesSansZoneRecharge.contains(ville)) {
                         villesSansZoneRecharge.add(ville);
@@ -475,13 +465,13 @@ public class CommunauteAgglomeration {
             Ville ville = trouverVilleParNom(nomVille); // Rechercher la ville par son nom
             if (ville != null) {
                 // Vérification si la ville n'a pas déjà une zone de recharge
-                if (!ville.getzoneDeRecharge()) {
-                    ville.setzoneDeRechargeTrue(); // Ajout de la zone de recharge à la ville
+                if (!ville.getZoneDeRecharge()) {
+                    ville.setZoneDeRechargeTrue(); // Ajout de la zone de recharge à la ville
                     // Vérification si la zone de recharge n'existe pas déjà
                     if (!contientRecharge(ville)) {
                         zonesRecharge.add(new ZoneRecharge(ville)); // Ajout d'une nouvelle zone de recharge à la liste
                     }
-                    ajusterRechargeConnectees(ville); // Ajustement des recharge connectées
+                    ajusterRechargeConnectees(ville); // Ajustement des recharges connectées
                     // Vérification de la contrainte d'accessibilité
                     if (respecteContrainte(ville)) {
                         System.out.println("\nZone de recharge ajoutée à " + ville.getNom() + ".");
@@ -521,13 +511,13 @@ public class CommunauteAgglomeration {
             Ville ville = trouverVilleParNom(nomVille); // Rechercher la ville par son nom
             if (ville != null) {
                 // Vérification si la ville n'a pas déjà une zone de recharge
-                if (!ville.getzoneDeRecharge()) {
-                    ville.setzoneDeRechargeTrue();  // Ajout de la zone de recharge à la ville
+                if (!ville.getZoneDeRecharge()) {
+                    ville.setZoneDeRechargeTrue();  // Ajout de la zone de recharge à la ville
                     // Vérification si la zone de recharge n'existe pas déjà
                     if (!contientRecharge(ville)) {
                         zonesRecharge.add(new ZoneRecharge(ville)); // Ajout d'une nouvelle zone de recharge à la liste
                     }
-                    ajusterRechargeConnectees(ville); // Ajustement des recharge connectées
+                    ajusterRechargeConnectees(ville); // Ajustement des recharges connectées
                     // Vérification de la contrainte d'accessibilité
                     if (respecteContrainte(ville)) {
                         System.out.println("\nZone de recharge ajoutée à " + ville.getNom() + ".");
@@ -619,24 +609,24 @@ public class CommunauteAgglomeration {
                 throw new IllegalArgumentException("La ville ne peut pas être null.");
             }
             // Vérifier si la ville a une zone de recharge
-            if (ville.getzoneDeRecharge()) {
-                boolean etat = ville.getzoneDeRecharge(); // Enregistrer l'état actuel de la zone de recharge
-                ville.setzoneDeRechargeFalse(); // Supprimer la zone de recharge de la ville
+            if (ville.getZoneDeRecharge()) {
+                boolean etat = ville.getZoneDeRecharge(); // Enregistrer l'état actuel de la zone de recharge
+                ville.setZoneDeRechargeFalse(); // Supprimer la zone de recharge de la ville
                 // Vérifier si la ville peut retirer sa zone de recharge
                 if (peutRetirerRecharge(ville)) {
                     // Vérifier si la contrainte est respectée pour ses voisins
                     if (contrainteVoisins(ville)) {
                         // Afficher un message indiquant que la zone de recharge a été retirée avec succès
-                        System.out.println("Zone de recharge retirée de " + ville.getNom());
+                        System.out.println("\nZone de recharge retirée de " + ville.getNom() + ".");
                     } else {
                         // Afficher un message si la contrainte n'est pas respectée pour les voisins
                         System.out.println("\nImpossible de retirer la zone de recharge de " + ville.getNom() + ". Cela violerait la contrainte d'accessibilité.");
-                        ville.setzoneDeRecharge(etat); // Rétablir l'état précédent de la zone de recharge
+                        ville.setZoneDeRecharge(etat); // Rétablir l'état précédent de la zone de recharge
                     }
                 } else {
                     // Afficher un message si aucun voisin avec une zone de recharge n'est trouvé
                     System.out.println("\nImpossible de retirer la zone de recharge de " + ville.getNom() + ". Aucun voisin avec une zone de recharge.");
-                    ville.setzoneDeRecharge(etat); // Rétablir l'état précédent de la zone de recharge
+                    ville.setZoneDeRecharge(etat); // Rétablir l'état précédent de la zone de recharge
                 }
             } else {
                 // Afficher un message d'erreur si la ville n'a pas de zone de recharge
@@ -666,7 +656,7 @@ public class CommunauteAgglomeration {
             }
             Set<String> voisins = graphe.getNeighbors(ville.getNom()); // Récupérer la liste des noms des voisins de la ville à partir du graphe
             // Retourner vrai si la ville elle-même a une zone de recharge ou si l'un de ses voisins a une zone de recharge
-            return ville.getzoneDeRecharge() || voisins.stream().anyMatch(s -> trouverVilleParNom(s).getzoneDeRecharge());
+            return ville.getZoneDeRecharge() || voisins.stream().anyMatch(s -> trouverVilleParNom(s).getZoneDeRecharge());
         } catch (NullPointerException e) {
             // Gérer spécifiquement une éventuelle NullPointerException
             System.out.println("NullPointerException lors de la vérification de la possibilité de retirer la recharge : " + e.getMessage());
@@ -920,7 +910,7 @@ public class CommunauteAgglomeration {
             // Parcourir toutes les villes dans la communauté
             for (Ville ville : villes) {
                 // Vérifier si la ville n'a pas de zone de recharge et n'est pas marquée comme problématique
-                if (!ville.getzoneDeRecharge() && !isProblematicCity(ville)) {
+                if (!ville.getZoneDeRecharge() && !isProblematicCity(ville)) {
                     recharge(ville.getNom()); // Simuler la recharge temporairement pour évaluer l'impact sur le score
                     int impactSurScore = score() - scoreCourant;
                     // Choisir la ville avec le plus petit impact sur le score
@@ -935,7 +925,7 @@ public class CommunauteAgglomeration {
                     }
                 }
                 // Retirer la recharge si la ville en a une
-                if (ville.getzoneDeRecharge()) {
+                if (ville.getZoneDeRecharge()) {
                     retirerRecharge(ville);
                 }
             }

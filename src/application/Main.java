@@ -1,6 +1,10 @@
 package application;
 
 import phase2.*;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -81,13 +85,17 @@ public class Main extends Application {
     private VBox createMainLayout(Stage primaryStage) {
         VBox root = new VBox(10);
         root.setAlignment(Pos.CENTER);
-        Label scoreLabel = new Label("Score : " + communaute.score()); // Label pour afficher le score actuel de la communauté
+        Label scoreLabel = new Label("Score : " + communaute.score());
         root.getChildren().add(scoreLabel);
         // Labels pour afficher des informations sur les villes avec ou sans zones de recharge
         Label avecRechargeLabel = new Label("Villes avec zone de recharge et rechargées :");
         Label rechargeesLabel = new Label("Villes rechargées :");
         Label sansRechargeLabel = new Label("Villes sans zone de recharge :");
         root.getChildren().addAll(avecRechargeLabel, rechargeesLabel, sansRechargeLabel);
+        // Bouton pour afficher le graphique
+        Button showGraphButton = new Button("Afficher le graphique");
+        showGraphButton.setOnAction(e -> showGraph());
+        root.getChildren().add(showGraphButton);
         // Mettre à jour les labels d'état avec les données actuelles de la communauté
         updateStatusLabel(avecRechargeLabel, rechargeesLabel, sansRechargeLabel);
         // Boutons pour la résolution manuelle et automatique, la sauvegarde et la sortie
@@ -247,5 +255,31 @@ public class Main extends Application {
         alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    /**
+     * Affiche le graphique en temps réel des villes chargées
+     */
+    private void showGraph() {
+        int villesAvecSourceRecharge = communaute.getVillesAvecSourceRecharge().size();
+        int villesRechargeesSansSource = communaute.getVillesRechargeesSansSource().size();
+        int villesTotales = communaute.getVilles().size();
+        // Créer les séries de données pour le graphique
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("État de charge des villes");
+        series.getData().add(new XYChart.Data<>("Rechargées avec source de recharge", villesAvecSourceRecharge));
+        series.getData().add(new XYChart.Data<>("Rechargées sans source de recharge", villesRechargeesSansSource));
+        series.getData().add(new XYChart.Data<>("Non rechargées", villesTotales - villesAvecSourceRecharge - villesRechargeesSansSource));
+        // Créer le graphique en barres
+        CategoryAxis xAxis = new CategoryAxis();
+        NumberAxis yAxis = new NumberAxis();
+        BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
+        barChart.setTitle("État de charge des villes");
+        barChart.getData().add(series);
+        // Créer une nouvelle fenêtre pour afficher le graphique
+        Stage stage = new Stage();
+        stage.setTitle("Graphique d'état de charge");
+        stage.setScene(new Scene(barChart, 400, 300));
+        stage.show();
     }
 }

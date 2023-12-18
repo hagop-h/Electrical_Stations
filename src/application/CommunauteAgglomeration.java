@@ -21,13 +21,23 @@ public class CommunauteAgglomeration extends phase2.CommunauteAgglomeration {
 	 * Affiche des messages appropriés en fonction du résultat de l'opération
 	 *
 	 * @param ville La ville de laquelle retirer la zone de recharge
+	 * @throws NullPointerException Si la méthode lance une NullPointerException
+	 * @throws IllegalArgumentException Si la ville est nulle
 	 */
 	public void retirerZoneRechargeMenu(Ville ville) {
-		// Vérifier si la ville n'est pas nulle
-		if (ville != null) {
-			retirerRecharge(ville); // Appeler la méthode retirerRecharge pour retirer la zone de recharge de la ville
-		} else {
-			System.out.println("Ville non trouvée. Veuillez réessayer."); // Afficher un message si la ville n'a pas été trouvée
+		try {
+			// Vérifier si la ville n'est pas nulle
+			if (ville != null) {
+				retirerRecharge(ville); // Appeler la méthode retirerRecharge pour retirer la zone de recharge de la ville
+			} else {
+				System.out.println("Ville non trouvée. Veuillez réessayer."); // Afficher un message si la ville n'a pas été trouvée
+			}
+		} catch (NullPointerException e) {
+			// Gérer spécifiquement une éventuelle NullPointerException
+			System.out.println("NullPointerException lors du retrait de la zone de recharge : " + e.getMessage());
+		} catch (IllegalArgumentException e) {
+			// Gérer spécifiquement une éventuelle IllegalArgumentException
+			System.out.println("IllegalArgumentException lors du retrait de la zone de recharge : " + e.getMessage());
 		}
 	}
 }

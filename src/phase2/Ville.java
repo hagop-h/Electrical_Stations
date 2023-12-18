@@ -21,14 +21,14 @@ public class Ville {
     /**
      * Active la zone de recharge d'une ville
      */
-    public void setzoneDeRechargeTrue() {
+    public void setZoneDeRechargeTrue() {
         zoneDeRecharge = true;
     }
 
     /**
      * Désactive la zone de recharge d'une ville
      */
-    public void setzoneDeRechargeFalse() {
+    public void setZoneDeRechargeFalse() {
         zoneDeRecharge = false;
     }
 
@@ -37,7 +37,7 @@ public class Ville {
      *
      * @param etatInitial L'état initial de la zone de recharge
      */
-    public void setzoneDeRecharge(boolean etatInitial) {
+    public void setZoneDeRecharge(boolean etatInitial) {
         zoneDeRecharge = etatInitial;
     }
 
@@ -46,7 +46,7 @@ public class Ville {
      *
      * @return vrai si la ville possède une zone de recharge, sinon faux
      */
-    public boolean getzoneDeRecharge() {
+    public boolean getZoneDeRecharge() {
         return zoneDeRecharge;
     }
 

@@ -160,7 +160,7 @@ public class CommunauteAgglomerationTest {
         // Act
         communaute.ajouterZoneRechargeMenu(new Scanner("VilleA\n"));
         // Assert
-        assertTrue(communaute.trouverVilleParNom("VilleA").getzoneDeRecharge());
+        assertTrue(communaute.trouverVilleParNom("VilleA").getZoneDeRecharge());
     }
 
     @Test
@@ -568,7 +568,7 @@ public class CommunauteAgglomerationTest {
     public void testRecharge() {
     	communaute.ajouterVille(new Ville("Paris"));
     	communaute.recharge("Paris");
-        assertTrue(communaute.trouverVilleParNom("Paris").getzoneDeRecharge());
+        assertTrue(communaute.trouverVilleParNom("Paris").getZoneDeRecharge());
     }
 
     @Test

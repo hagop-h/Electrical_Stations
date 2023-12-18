@@ -4,7 +4,7 @@ package phase2;
  * La classe ZoneRecharge représente une zone de recharge associée à une ville dans une communauté d'agglomération
  */
 public class ZoneRecharge {
-    private Ville ville; // La ville associée à une zone de recharge
+    private final Ville ville; // La ville associée à une zone de recharge
 
     /**
      * Constructeur de la classe ZoneRecharge
@@ -30,6 +30,6 @@ public class ZoneRecharge {
      * @return vrai si la ville est une source de recharge, sinon faux
      */
     public boolean estSourceRecharge() {
-        return ville.getzoneDeRecharge();
+        return ville.getZoneDeRecharge();
     }
 }
