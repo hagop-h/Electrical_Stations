@@ -880,7 +880,7 @@ public class CommunauteAgglomeration {
      */
     public void resoudreAutomatiquement() {
         try {
-            int maxIterations = 2; // Nombre maximal d'itérations
+            int maxIterations = 4; // Nombre maximal d'itérations
             scoreCourant = score(); // Initialiser scoreCourant avec le score actuel
             // Obtenir la liste des sommets triés par degré en ordre décroissant
             List<Ville> liste = trierSommetsParDegree();
@@ -916,6 +916,16 @@ public class CommunauteAgglomeration {
         try {
             // Créer une copie de la liste des villes pour éviter de modifier l'ordre d'origine
             List<Ville> sommets = new ArrayList<>(villes);
+            // Trier les sommets par degré croissant en utilisant le nombre de voisins connectés dans le graphe
+            sommets.sort(Comparator.comparingInt((Ville s) -> graphe.getNeighbors(s.getNom()).size()));
+	    // Retirer zone de recharge des villes
+            for(int i = 0;i<sommets.size();i++) {
+            	Ville ville = sommets.get(i);
+            	if(ville.getZoneDeRecharge() || getVillesAvecSourceRecharge().contains(ville)) {
+            		retirerRecharge(ville);
+            	}
+            }
+            System.err.println("score: "+score());
             // Trier les sommets par degré décroissant en utilisant le nombre de voisins connectés dans le graphe
             sommets.sort(Comparator.comparingInt((Ville s) -> graphe.getNeighbors(s.getNom()).size()).reversed());
             return sommets;
