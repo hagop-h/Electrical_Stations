@@ -872,114 +872,42 @@ public class CommunauteAgglomeration {
      */
     public void resoudreAutomatiquement() {
         try {
-            int i = 0; // Compteur d'itérations
-            int k = 1; // Paramètre de contrôle pour le nombre maximal d'itérations
+            int maxIterations = 2; // Nombre maximal d'itérations
             scoreCourant = score(); // Initialiser scoreCourant avec le score actuel
-            while (i < k) {
-                Ville ville = choisirVilleOptimale(); // Sélectionner la ville optimale à recharger
-                if (ville != null) {
-                    recharge(ville.getNom()); // Recharger la ville sélectionnée
-                    int nouveauScore = score(); // Évaluer le nouveau score après la recharge
-                    if (nouveauScore <= scoreCourant) {
-                        i = 0; // Réinitialiser le compteur si le score s'améliore ou reste inchangé
-                        scoreCourant = nouveauScore; // Mettre à jour le score courant
-                    } else {
-                        i++; // Incrémenter le compteur si le score n'améliore pas
-                        retirerRecharge(ville); // Annuler la recharge pour revenir à l'état précédent
+
+            // Obtenir la liste des sommets triés par degré en ordre décroissant
+            List<Ville> liste = trierSommetsParDegree();
+
+            Set<Ville> villesRechargees = new HashSet<>();
+
+            int i = 0;
+            while (i < maxIterations) {
+                for (Ville ville : liste) {
+                    if (!villesRechargees.contains(ville)) {
+                        recharge(ville.getNom());
+                        int nouveauScore = score();
+
+                        if (nouveauScore <= scoreCourant) {
+                            scoreCourant = nouveauScore;
+                            villesRechargees.add(ville);
+                        } else {
+                            retirerRecharge(ville);
+                        }
                     }
-                } else {
-                    break; // Arrêter si aucune ville disponible n'est trouvée
                 }
+                i++;
             }
         } catch (NullPointerException e) {
-            // Gérer spécifiquement une éventuelle NullPointerException
             System.out.println("NullPointerException lors de la résolution automatique : " + e.getMessage());
         }
     }
 
-    /**
-     * Choisi la ville optimale pour la recharge en fonction de son impact sur le score actuel
-     *
-     * @return La ville optimale à recharger ou null s'il n'y a aucune ville disponible
-     * @throws NullPointerException si la liste des villes est null lors du choix de la ville optimale
-     */
-    public Ville choisirVilleOptimale() {
-        try {
-            Ville villeOptimale = null; // Ville à recharger de manière optimale
-            int impactMin = Integer.MAX_VALUE; // Initialiser l'impact minimal sur le score
-            // Parcourir toutes les villes dans la communauté
-            for (Ville ville : villes) {
-                // Vérifier si la ville n'a pas de zone de recharge et n'est pas marquée comme problématique
-                if (!ville.getZoneDeRecharge() && !isProblematicCity(ville)) {
-                    recharge(ville.getNom()); // Simuler la recharge temporairement pour évaluer l'impact sur le score
-                    int impactSurScore = score() - scoreCourant;
-                    // Choisir la ville avec le plus petit impact sur le score
-                    if (impactSurScore < impactMin) {
-                        impactMin = impactSurScore;
-                        villeOptimale = ville;
-                    }
-                    retirerRecharge(ville); // Annuler la recharge temporaire
-                    // Si l'impact est toujours zéro, marquer la ville comme problématique
-                    if (impactSurScore == 0) {
-                        markAsProblematicCity(ville);
-                    }
-                }
-                // Retirer la recharge si la ville en a une
-                if (ville.getZoneDeRecharge()) {
-                    retirerRecharge(ville);
-                }
-            }
-            return villeOptimale;
-        } catch (NullPointerException e) {
-            // Gérer spécifiquement une éventuelle NullPointerException
-            System.out.println("NullPointerException lors du choix de la ville optimale : " + e.getMessage());
-            return null; // Retourner null en cas d'erreur
-        }
-    }
 
-    /**
-     * Vérifie si une ville est marquée comme problématique
-     *
-     * @param ville La ville à vérifier
-     * @return vrai si la ville est marquée comme problématique, sinon faux
-     * @throws IllegalArgumentException si la ville passée en paramètre est null
-     * @throws NullPointerException si la collection problematicCities est null lors de la vérification
-     */
-    public boolean isProblematicCity(Ville ville) {
-        try {
-            if (ville == null) {
-                throw new IllegalArgumentException("La ville ne peut pas être null.");
-            }
-            if (problematicCities != null) {
-                return problematicCities.contains(ville);
-            } else {
-                System.err.println("Erreur : La collection problematicCities n'est pas initialisée.");
-                return false;
-            }
-        } catch (NullPointerException e) {
-            // Gérer spécifiquement une éventuelle NullPointerException
-            System.out.println("NullPointerException lors de la vérification si la ville est problématique : " + e.getMessage());
-            return false; // Retourner faux en cas d'erreur 
-        }
-    }
 
-    /**
-     * Marque une ville comme problématique en l'ajoutant à la liste des villes problématiques
-     *
-     * @param ville La ville à marquer comme problématique
-     * @throws IllegalArgumentException si la ville passée en paramètre est null
-     * @throws NullPointerException si la collection problematicCities est null lors du marquage
-     */
-    public void markAsProblematicCity(Ville ville) {
-        try {
-            if (ville == null) {
-                throw new IllegalArgumentException("La ville ne peut pas être null.");
-            }
-            problematicCities.add(ville);
-        } catch (NullPointerException e) {
-            // Gérer spécifiquement une éventuelle NullPointerException
-            System.out.println("NullPointerException lors du marquage de la ville comme problématique : " + e.getMessage());
-        }
+    private List<Ville> trierSommetsParDegree() {
+        List<Ville> sommets = new ArrayList<>(villes);
+        sommets.sort(Comparator.comparingInt((Ville s) -> graphe.getNeighbors(s.getNom()).size()).reversed());
+        return sommets;
     }
 
     /**
