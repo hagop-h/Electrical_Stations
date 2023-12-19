@@ -387,51 +387,6 @@ public class CommunauteAgglomerationTest {
     }
 
     @Test
-    public void testIsProblematicCity_VilleProblematique_MarqueCommeProblematique() {
-        // Arrange
-        Ville villeA = new Ville("VilleA");
-        communaute.markAsProblematicCity(villeA);
-        // Act
-        boolean result = communaute.isProblematicCity(villeA);
-        // Assert
-        assertTrue(result);
-    }
-
-    @Test
-    public void testIsProblematicCity_VilleNonProblematique_NonMarqueeCommeProblematique() {
-        // Arrange
-        Ville villeA = new Ville("VilleA");
-        // Act
-        boolean result = communaute.isProblematicCity(villeA);
-        // Assert
-        assertFalse(result);
-    }
-
-    @Test
-    public void testMarkAsProblematicCity_VilleProblematique_MarqueeCommeProblematique() {
-        // Arrange
-        Ville villeA = new Ville("VilleA");
-        // Act
-        communaute.markAsProblematicCity(villeA);
-        // Assert
-        assertTrue(communaute.isProblematicCity(villeA));
-    }
-
-    @Test
-    public void testMarkAsProblematicCity_VilleNull_AfficheMessageErreur() {
-        // Arrange
-        Ville villeA = null;
-        // Act
-        try {
-            communaute.markAsProblematicCity(villeA);
-        }
-        catch(IllegalArgumentException e){
-            // Assert
-            assertTrue(e.getMessage().contains("La ville ne peut pas être null."));
-        }
-    }
-
-    @Test
     public void testEstRelieeAvecBorne_VilleRelieeAvecBorne_RetourneTrue() {
         // Arrange
         Ville villeA = new Ville("VilleA");
@@ -533,13 +488,6 @@ public class CommunauteAgglomerationTest {
         communaute.ajouterRecharge(new ZoneRecharge(villeA));
         assertTrue(communaute.contientRecharge(villeA));
     }
-    
-    @Test
-    void testIsProblematicCity() {
-        Ville problematicVille = new Ville("ProblematicVille");
-        communaute.markAsProblematicCity(problematicVille);
-        assertTrue(communaute.isProblematicCity(problematicVille));
-    }
 
     @Test
     void testEstRelieeAvecBorne() {
@@ -587,11 +535,6 @@ public class CommunauteAgglomerationTest {
     @Test
     public void testResoudreAutomatiquementAvecCommunauteVide() {
         assertDoesNotThrow(communaute::resoudreAutomatiquement);
-    }
-
-    @Test
-    public void testChoisirVilleOptimaleAvecCommunauteVide() {
-        assertNull(communaute.choisirVilleOptimale());
     }
 
     @Test

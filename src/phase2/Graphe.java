@@ -45,24 +45,4 @@ public class Graphe {
     public Set<String> getNeighbors(String vertex) {
         return adjacencyList.getOrDefault(vertex, new HashSet<>());
     }
-
-    /**
-     * Récupère l'ensemble de tous les sommets du graphe
-     *
-     * @return L'ensemble des sommets du graphe
-     */
-    public Set<String> getVertices() {
-        return adjacencyList.keySet();
-    }
-
-    /**
-     * Supprime une arête entre deux sommets dans le graphe
-     *
-     * @param vertex1 Le premier sommet
-     * @param vertex2 Le deuxième sommet
-     */
-    public void removeEdge(String vertex1, String vertex2) {
-        adjacencyList.get(vertex1).remove(vertex2);
-        adjacencyList.get(vertex2).remove(vertex1);
-    }
 }

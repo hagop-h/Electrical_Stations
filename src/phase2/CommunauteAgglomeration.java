@@ -9,10 +9,10 @@ import java.util.stream.*;
  * Elle utilise un graph pour représenter la connectivité entre les villes
  */
 public class CommunauteAgglomeration {
-    private Set<Ville> villes; // Ensemble de villes dans une communauté
+    private final Set<Ville> villes; // Ensemble de villes dans une communauté
     private Set<Route> routes; // Ensemble de routes entre les villes
     private List<ZoneRecharge> zonesRecharge; // Liste de zones de recharge présentes dans une communauté
-    private Graphe graphe; // Graph représentant la connectivité entre les villes
+    private final Graphe graphe; // Graph représentant la connectivité entre les villes
     private int scoreCourant; // Score actuel utilisé dans l'algorithme optimal
     
     /**
@@ -24,14 +24,25 @@ public class CommunauteAgglomeration {
         routes = new HashSet<>();
         zonesRecharge = new ArrayList<>();
         graphe = new Graphe();
-        problematicCities = new HashSet<>();
         scoreCourant = 0;
     }
 
+    /**
+     * Renvoie l'ensemble des villes.
+     *
+     * @return L'ensemble des villes.
+     * @throws NullPointerException si l'ensemble des villes est null
+     */
     public Set<Ville> getVilles() {
-        return villes;
+        try {
+            // Retourner l'ensemble des villes
+            return villes;
+        } catch (NullPointerException e) {
+            // Gérer spécifiquement une éventuelle NullPointerException
+            System.out.println("NullPointerException lors de la récupération de l'ensemble des villes : " + e.getMessage());
+            return Collections.emptySet(); // Renvoyer une collection vide en cas de NullPointerException
+        }
     }
-
 
     /**
      * Obtient la liste des objets Zones recharge
@@ -537,8 +548,6 @@ public class CommunauteAgglomeration {
         }
     }
 
-    
-
     /**
      * Ajoute une nouvelle ville à la communauté d'agglomération
      *
@@ -873,19 +882,15 @@ public class CommunauteAgglomeration {
         try {
             int maxIterations = 2; // Nombre maximal d'itérations
             scoreCourant = score(); // Initialiser scoreCourant avec le score actuel
-
             // Obtenir la liste des sommets triés par degré en ordre décroissant
             List<Ville> liste = trierSommetsParDegree();
-
             Set<Ville> villesRechargees = new HashSet<>();
-
             int i = 0;
             while (i < maxIterations) {
                 for (Ville ville : liste) {
                     if (!villesRechargees.contains(ville)) {
                         recharge(ville.getNom());
                         int nouveauScore = score();
-
                         if (nouveauScore <= scoreCourant) {
                             scoreCourant = nouveauScore;
                             villesRechargees.add(ville);
@@ -901,12 +906,24 @@ public class CommunauteAgglomeration {
         }
     }
 
-
-
-    private List<Ville> trierSommetsParDegree() {
-        List<Ville> sommets = new ArrayList<>(villes);
-        sommets.sort(Comparator.comparingInt((Ville s) -> graphe.getNeighbors(s.getNom()).size()).reversed());
-        return sommets;
+    /**
+     * Trie les villes par degré décroissant dans le graphe
+     *
+     * @return Une liste triée de villes en fonction du nombre de voisins connectés
+     * @throws NullPointerException si le graphe ou la liste des villes est null
+     */
+    public List<Ville> trierSommetsParDegree() {
+        try {
+            // Créer une copie de la liste des villes pour éviter de modifier l'ordre d'origine
+            List<Ville> sommets = new ArrayList<>(villes);
+            // Trier les sommets par degré décroissant en utilisant le nombre de voisins connectés dans le graphe
+            sommets.sort(Comparator.comparingInt((Ville s) -> graphe.getNeighbors(s.getNom()).size()).reversed());
+            return sommets;
+        } catch (NullPointerException e) {
+            // Gérer spécifiquement une éventuelle NullPointerException
+            System.out.println("NullPointerException lors du tri des sommets par degré : " + e.getMessage());
+            return Collections.emptyList(); // Renvoyer une liste vide en cas de NullPointerException
+        }
     }
 
     /**

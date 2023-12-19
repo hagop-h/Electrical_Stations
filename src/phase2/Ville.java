@@ -58,15 +58,4 @@ public class Ville {
     public String getNom() {
         return nom;
     }
-
-
-    /**
-     * Surcharge de la méthode toString pour obtenir une représentation textuelle de la ville
-     *
-     * @return Une chaîne représentant la ville
-     */
-    @Override
-    public String toString() {
-        return "Ville {" + "nom = " + nom + ", zoneDeRecharge = " + zoneDeRecharge + '}';
-    }
 }
