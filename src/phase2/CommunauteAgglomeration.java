@@ -891,7 +891,7 @@ public class CommunauteAgglomeration {
                     if (!villesRechargees.contains(ville)) {
                         recharge(ville.getNom());
                         int nouveauScore = score();
-                        if (nouveauScore <= scoreCourant) {
+                        if (nouveauScore < scoreCourant) {
                             scoreCourant = nouveauScore;
                             villesRechargees.add(ville);
                         } else {
