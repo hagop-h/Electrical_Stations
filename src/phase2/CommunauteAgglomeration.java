@@ -13,7 +13,6 @@ public class CommunauteAgglomeration {
     private Set<Route> routes; // Ensemble de routes entre les villes
     private List<ZoneRecharge> zonesRecharge; // Liste de zones de recharge présentes dans une communauté
     private Graphe graphe; // Graph représentant la connectivité entre les villes
-    private Set<Ville> problematicCities; // Ensemble de villes problématiques à considérer lors du choix de la ville optimale
     private int scoreCourant; // Score actuel utilisé dans l'algorithme optimal
     
     /**
