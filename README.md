@@ -42,7 +42,7 @@ Ou téléchargez le code source directement depuis la page du projet.
 
 ## Compilation
 
-Note : Sur les systèmes Windows, utilisez le backslash (\) comme séparateur de chemin au lieu de slash (/)
+Note : Sur les systèmes Windows, utilisez le backslash (\\) comme séparateur de chemin au lieu de slash (/)
 pour toutes les commandes que vous retrouvez dans ce document.
 
 ### Compilation de la Phase 1 (produit initial)
