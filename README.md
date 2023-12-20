@@ -1,10 +1,13 @@
 # Electrical_Stations (Gestion des zones de recharge dans une communauté d'agglomération)
 
-* [Introdution](#introduction)
+* [Introduction](#introduction)
 * [Installation](#installation)
+* [Compilation](#compilation)
+* [Execution](#execution)
 * [Phase 1 (produit initial)](#phase-1-produit-initial)
 * [Phase 2 (produit final)](#phase-2-produit-final)
 * [Utilisation](#utilisation)
+* [Fichier de configuration](#fichier-de-configuration)
 * [Code](#code)
 * [Remarques](#remarques)
 * [Licence](#licence)
@@ -19,7 +22,7 @@ De plus, des fonctionnalités de sauvegarde et de chargement de configurations s
 
 ## Installation
 
-Pour installer et exécuter le logiciel suivez les étapes ci-dessous :
+Pour installer et exécuter le logiciel, suivez les étapes ci-dessous :
 
 ### Prérequis
 
@@ -35,7 +38,63 @@ Clonez le dépôt GitHub du projet en utilisant la commande suivante dans votre 
 git clone https://github.com/sepanta007/Electrical_Stations
 ```
 
-ou téléchargez le code source directement depuis la page du projet.
+Ou téléchargez le code source directement depuis la page du projet.
+
+## Compilation
+
+Note : Sur les systèmes Windows, utilisez le backslash (\) comme séparateur de chemin au lieu de slash (/)
+pour toutes les commandes que vous retrouvez dans ce document.
+
+### Compilation de la Phase 1 (produit initial)
+
+Pour compiler la phase 1, utilisez la commande suivante dans le répertoire racine du projet :
+
+```bash
+javac src/phase1/*.java -d out/production/Electrical_Stations
+```
+
+Pour compiler la phase 2, utilisez la commande suivante dans le répertoire racine du projet :
+
+```bash
+javac src/phase2/*.java -d out/production/Electrical_Stations
+```
+
+Pour compiler l'application JavaFX, utilisez la commande suivante dans le répertoire racine du projet :
+
+```bash
+javac --add-modules javafx.controls,javafx.fxml,javafx.chart -d out/production/Electrical_Stations src/application/Main.java
+```
+
+Note : Si JavaFX n'est pas installé de manière globale sur le système et que les modules nécessaires ne sont pas accessibles sans spécifier un chemin personnalisé,
+utilisez la commande suivante dans le répertoire racine du projet : 
+
+```bash
+javac --module-path <chemin_vers_javafx_sdk>/lib --add-modules javafx.controls,javafx.fxml,javafx.chart -d out/production/Electrical_Stations src/application/Main.java
+```
+
+Notez bien que vous devez remplacer <chemin_vers_javafx_sdk> par le chemin réel vers votre JavaFX SDK.
+
+## Execution
+
+Pour exécuter la phase 1, utilisez la commande suivante dans le répertoire racine du projet :
+
+```bash
+java -cp out/production/Electrical_Stations phase1.Main
+```
+
+Pour exécuter la phase 2, utilisez la commande suivante dans le répertoire racine du projet :
+
+```bash
+java -cp out/production/Electrical_Stations phase2.Main chemin/vers/fichier/nom_fichier.txt
+```
+
+Notez bien que vous devez remplacer "chemin/vers/fichier/nom_fichier.txt" par le chemin absolu ou relatif vers votre fichier texte représentant la communauté d'agglomération.
+
+Pour exécuter l'application JavaFX, utilisez la commande suivante dans le répertoire racine du projet :
+
+```bash
+java -cp out/production/Electrical_Stations application.Main
+```
 
 ## Phase 1 (produit initial)
 
@@ -63,6 +122,7 @@ Cette phase vise à permettre à l'utilisateur de représenter une communauté d
 
 ### Options du menu
 
+* Affichage graphique (pour JavaFX) : Visualiser graphiquement l'état de charge des villes (le nombre de villes rechargées avec ou sans source de recharge et le nombre de villes non rechargées).
 * Résoudre manuellement : L'utilisateur peut configurer les zones de recharge comme dans la phase 1.
 * Résoudre automatiquement : Appliquer un algorithme pour résoudre le problème automatiquement.
 * Sauvegarde : Enregistrer la configuration actuelle dans un fichier texte.
@@ -76,12 +136,43 @@ Le fichier d'entrée suit les spécifications du projet.
 Le programme permet également d'enregistrer les opérations effectuées dans un fichier de sortie.
 Elle contient les résultats ou la configuration actuelle, selon le contexte de l'exécution.
 
+## Fichier de configuration
+
+Le fichier de configuration doit respecter une structure spécifique pour être interprété correctement par le programme. 
+Chaque commande doit être placée sur une ligne distincte,
+et aucune espace supplémentaire entre les caractères de chaque commande n'est autorisée entre les arguments des commandes.
+Ainsi chaque commande doit se terminer par un point. Voici la structure générale attendue :
+
+```text
+ville(NOM).
+route(VILLE_A,VILLE_B).
+recharge(VILLE_X).
+```
+
+### Description des commandes
+
+* `ville(NOM)`: Définit une ville avec le nom spécifié.
+* `route(VILLE_A,VILLE_B)`: Définit une route entre les deux villes spécifiées.
+* `recharge(VILLE_X)`: Indique qu'il y a une zone de recharge dans la ville spécifiée.
+
+Note : Comme précisé précédemment, aucune espace n'est autorisé entre les arguments, par exemple, utilisez `route(VILLE_A,VILLE_B)` et non pas `route(VILLE_A, VILLE_B)`.
+
+Assurez-vous de suivre scrupuleusement cette structure pour que le programme puisse interpréter 
+correctement le fichier de configuration.
+
+Exemple du fichier :
+
+```text
+ville(A).
+ville(B).
+route(A,B).
+recharge(A).
+```
+
 ## Code
 
-### Classe CommunauteAgglomeration
-
-Elle est le point central du programme et est responsable de la gestion de la communauté d'agglomération.
-Sa fonctionalité principale est de représenter et de manipuler les différentes entités au sein de cette communauté, telles que les villes, les routes et les zones de recharge.
+La classe `CommunauteAgglomeration` est le point central du programme et est responsable de la gestion de la communauté d'agglomération.
+Sa fonctionnalité principale est de représenter et de manipuler les différentes entités au sein de cette communauté, telles que les villes, les routes et les zones de recharge.
 
 ## Remarques
 

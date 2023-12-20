@@ -918,14 +918,12 @@ public class CommunauteAgglomeration {
             List<Ville> sommets = new ArrayList<>(villes);
             // Trier les sommets par degré croissant en utilisant le nombre de voisins connectés dans le graphe
             sommets.sort(Comparator.comparingInt((Ville s) -> graphe.getNeighbors(s.getNom()).size()));
-	    // Retirer zone de recharge des villes
-            for(int i = 0;i<sommets.size();i++) {
-            	Ville ville = sommets.get(i);
-            	if(ville.getZoneDeRecharge() || getVillesAvecSourceRecharge().contains(ville)) {
-            		retirerRecharge(ville);
-            	}
+	        // Retirer zone de recharge des villes
+            for (Ville ville : sommets) {
+                if (ville.getZoneDeRecharge()) {
+                    retirerRecharge(ville);
+                }
             }
-            System.err.println("score: "+score());
             // Trier les sommets par degré décroissant en utilisant le nombre de voisins connectés dans le graphe
             sommets.sort(Comparator.comparingInt((Ville s) -> graphe.getNeighbors(s.getNom()).size()).reversed());
             return sommets;
