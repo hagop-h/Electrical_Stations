@@ -62,14 +62,14 @@ javac src/phase2/*.java -d out/production/Electrical_Stations
 Pour compiler l'application JavaFX, utilisez la commande suivante dans le répertoire racine du projet :
 
 ```bash
-javac --add-modules javafx.controls,javafx.fxml,javafx.chart -d out/production/Electrical_Stations src/application/Main.java
+javac --add-modules javafx.controls -d out/production/Electrical_Stations src/application/*.java src/phase2/*.java
 ```
 
 Note : Si JavaFX n'est pas installé de manière globale sur le système et que les modules nécessaires ne sont pas accessibles sans spécifier un chemin personnalisé,
 utilisez la commande suivante dans le répertoire racine du projet : 
 
 ```bash
-javac --module-path <chemin_vers_javafx_sdk>/lib --add-modules javafx.controls,javafx.fxml,javafx.chart -d out/production/Electrical_Stations src/application/Main.java
+javac --module-path <chemin_vers_javafx_sdk>/lib --add-modules javafx.controls -d out/production/Electrical_Stations src/application/*.java src/phase2/*.java
 ```
 
 Notez bien que vous devez remplacer <chemin_vers_javafx_sdk> par le chemin réel vers votre JavaFX SDK.
@@ -93,6 +93,15 @@ Pour exécuter l'application JavaFX, utilisez la commande suivante dans le répe
 ```bash
 java -cp out/production/Electrical_Stations application.Main
 ```
+
+Note : Si JavaFX n'est pas installé de manière globale sur le système et que les modules nécessaires ne sont pas accessibles sans spécifier un chemin personnalisé,
+utilisez la commande suivante dans le répertoire racine du projet :
+
+```bash
+java --module-path <chemin_vers_javafx_sdk>/lib --add-modules javafx.controls -cp out/production/Electrical_Stations application.Main
+```
+  
+Notez bien que vous devez remplacer <chemin_vers_javafx_sdk> par le chemin réel vers votre JavaFX SDK.
 
 ## Phase 1 (produit initial)
 
