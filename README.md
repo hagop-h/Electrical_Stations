@@ -85,10 +85,8 @@ java -cp out/production/Electrical_Stations phase1.Main
 Pour exécuter la phase 2, utilisez la commande suivante dans le répertoire racine du projet :
 
 ```bash
-java -cp out/production/Electrical_Stations phase2.Main chemin/vers/fichier/nom_fichier.txt
+java -cp out/production/Electrical_Stations phase2.Main
 ```
-
-Notez bien que vous devez remplacer "chemin/vers/fichier/nom_fichier.txt" par le chemin absolu ou relatif vers votre fichier texte représentant la communauté d'agglomération.
 
 Pour exécuter l'application JavaFX, utilisez la commande suivante dans le répertoire racine du projet :
 
@@ -184,7 +182,7 @@ Sa fonctionnalité principale est de représenter et de manipuler les différent
 
 ## Licence
 
-Elecrical_Stations est sous licence [MIT](https://github.com/sepanta007/Electrical_Stations/blob/master/LICENSE.md).
+Electrical_Stations est sous licence [MIT](https://github.com/sepanta007/Electrical_Stations/blob/master/LICENSE.md).
 
 ## Contributeurs
 
