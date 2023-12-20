@@ -43,7 +43,7 @@ Ou téléchargez le code source directement depuis la page du projet.
 ## Compilation
 
 Note : Sur les systèmes Windows, utilisez le backslash (\\) comme séparateur de chemin au lieu de slash (/)
-pour toutes les commandes que vous retrouvez dans ce document.
+pour toutes les commandes que vous retrouvez par la suite.
 
 ### Compilation de la Phase 1 (produit initial)
 
@@ -66,7 +66,7 @@ javac --add-modules javafx.controls -d out/production/Electrical_Stations src/ap
 ```
 
 Note : Si JavaFX n'est pas installé de manière globale sur le système et que les modules nécessaires ne sont pas accessibles sans spécifier un chemin personnalisé,
-utilisez la commande suivante dans le répertoire racine du projet : 
+utilisez plutôt la commande suivante dans le répertoire racine du projet : 
 
 ```bash
 javac --module-path <chemin_vers_javafx_sdk>/lib --add-modules javafx.controls -d out/production/Electrical_Stations src/application/*.java src/phase2/*.java
@@ -95,7 +95,7 @@ java -cp out/production/Electrical_Stations application.Main
 ```
 
 Note : Si JavaFX n'est pas installé de manière globale sur le système et que les modules nécessaires ne sont pas accessibles sans spécifier un chemin personnalisé,
-utilisez la commande suivante dans le répertoire racine du projet :
+utilisez plutôt la commande suivante dans le répertoire racine du projet :
 
 ```bash
 java --module-path <chemin_vers_javafx_sdk>/lib --add-modules javafx.controls -cp out/production/Electrical_Stations application.Main
