@@ -371,7 +371,7 @@ public class CommunauteAgglomerationTest {
         // Arrange
         Ville villeA = new Ville("VilleA");
         communaute.ajouterVille(villeA);
-        communaute.recharge("villeA");
+        communaute.recharge("VilleA");
         // Act
         int result = communaute.score();
         // Assert
