@@ -146,7 +146,7 @@ public class CommunauteAgglomeration {
      */
     public Ville trouverVilleParNom(String nom) {
         try {
-            return villes.stream().filter(ville -> ville.getNom().equalsIgnoreCase(nom)).findFirst().orElse(null);
+            return villes.stream().filter(ville -> ville.getNom().equals(nom)).findFirst().orElse(null);
         } catch (NullPointerException e) {
             // Gérer l'exception si la liste de villes est null
             System.out.println("La liste de villes n'est pas correctement initialisée.");
