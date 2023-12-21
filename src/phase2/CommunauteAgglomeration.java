@@ -167,7 +167,7 @@ public class CommunauteAgglomeration {
         Scanner scanner = new Scanner(System.in);
         int choixMenu;
         // Générer une solution initiale si la liste des chargeurs est vide
-        if (zonesRecharge.isEmpty()) {
+        if (zonesRecharge.isEmpty() || getVillesSansZoneRecharge().size()>0) {
             genererSolutionInitiale();
         }
         // Boucle pour la gestion manuelle
