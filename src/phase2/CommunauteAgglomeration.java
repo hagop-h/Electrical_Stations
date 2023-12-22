@@ -166,14 +166,14 @@ public class CommunauteAgglomeration {
     public void trouverSolutionManuelle() {
         Scanner scanner = new Scanner(System.in);
         int choixMenu;
-        // Générer une solution initiale si la liste des chargeurs est vide
+        // Générer une solution initiale si la liste des chargeurs est vide ou s'il existe des villes non rechargées
         if (zonesRecharge.isEmpty() || !getVillesSansZoneRecharge().isEmpty()) {
             genererSolutionInitiale();
         }
         // Boucle pour la gestion manuelle
         do {
             try {
-                System.out.println("\nScore : " + score() + "\n");
+                System.out.println("\nScore : " + score());
                 afficherVillesAvecOuSansRecharge(); // Afficher l'état actuel des villes avec ou sans recharge
                 afficherMenuSolutionManuelle(); // Afficher le menu pour la gestion manuelle
                 choixMenu = lireEntier(scanner); // Lire le choix de l'utilisateur
@@ -581,7 +581,7 @@ public class CommunauteAgglomeration {
             Ville ville = trouverVilleParNom(nomVille); // Trouver la ville correspondant au nom entré
             // Vérifier si la ville a été trouvée
             if (ville != null) {
-                retirerRechargemManuellement(ville); // Appeler la méthode retirerRecharge pour retirer la zone de recharge de la ville
+                retirerRechargeManuellement(ville); // Appeler la méthode retirerRecharge pour retirer la zone de recharge de la ville
             } else {
                 System.out.println("Ville non trouvée. Veuillez réessayer."); // Afficher un message si la ville n'a pas été trouvée
             }
@@ -606,7 +606,7 @@ public class CommunauteAgglomeration {
      * @throws NullPointerException si une exception de type NullPointerException est levée lors du retrait de la zone de recharge
      * @throws IllegalArgumentException si une exception de type IllegalArgumentException est levée lors du retrait de la zone de recharge
      */
-    public void retirerRechargemManuellement(Ville ville) {
+    public void retirerRechargeManuellement(Ville ville) {
         try {
             if (ville == null) {
                 throw new IllegalArgumentException("La ville ne peut pas être null.");
@@ -910,8 +910,16 @@ public class CommunauteAgglomeration {
      * @throws NullPointerException si la liste des villes est null lors de la résolution automatique
      */
     public void resoudreAutomatiquement() {
+        // Générer une solution initiale si la liste des chargeurs est vide ou s'il existe des villes non rechargées
+        if (zonesRecharge.isEmpty() || !getVillesSansZoneRecharge().isEmpty()) {
+            genererSolutionInitiale();
+            System.out.println("\nSolution naïve :");
+            System.out.println("\nScore : " + score());
+            afficherVillesAvecOuSansRecharge();
+        }
         try {
-            int maxIterations = 4; // Nombre maximal d'itérations
+            System.out.println("\nSolution optimale :");
+            int maxIterations = 5; // Nombre maximal d'itérations
             scoreCourant = score(); // Initialiser scoreCourant avec le score actuel
             // Obtenir la liste des sommets triés par degré en ordre décroissant
             List<Ville> liste = trierSommetsParDegree();
