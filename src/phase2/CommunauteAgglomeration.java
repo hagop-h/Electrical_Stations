@@ -167,7 +167,7 @@ public class CommunauteAgglomeration {
         Scanner scanner = new Scanner(System.in);
         int choixMenu;
         // Générer une solution initiale si la liste des chargeurs est vide
-        if (zonesRecharge.isEmpty() || getVillesSansZoneRecharge().size()>0) {
+        if (zonesRecharge.isEmpty() || !getVillesSansZoneRecharge().isEmpty()) {
             genererSolutionInitiale();
         }
         // Boucle pour la gestion manuelle
@@ -529,15 +529,10 @@ public class CommunauteAgglomeration {
                     }
                     ajusterRechargeConnectees(ville); // Ajustement des recharges connectées
                     // Vérification de la contrainte d'accessibilité
-                    if (respecteContrainte(ville)) {
-                        System.out.println("\nZone de recharge ajoutée à " + ville.getNom() + ".");
-                    } else {
+                    if (!respecteContrainte(ville)) {
                         // Retrait de la zone de recharge en cas de violation de la contrainte
                         zonesRecharge.removeIf(parking -> parking.getVille().equals(ville));
-                        System.out.println("\nImpossible d'ajouter la zone de recharge à " + ville.getNom() + ". Cela violerait la contrainte d'accessibilité.");
                     }
-                } else {
-                    System.out.println("\nIl y a déjà une zone de recharge dans " + ville.getNom() + ".");
                 }
             } else {
                 System.out.println("\nVille non trouvée. Veuillez réessayer.");
@@ -586,7 +581,7 @@ public class CommunauteAgglomeration {
             Ville ville = trouverVilleParNom(nomVille); // Trouver la ville correspondant au nom entré
             // Vérifier si la ville a été trouvée
             if (ville != null) {
-                retirerRecharge(ville); // Appeler la méthode retirerRecharge pour retirer la zone de recharge de la ville
+                retirerRechargemManuellement(ville); // Appeler la méthode retirerRecharge pour retirer la zone de recharge de la ville
             } else {
                 System.out.println("Ville non trouvée. Veuillez réessayer."); // Afficher un message si la ville n'a pas été trouvée
             }
@@ -604,14 +599,14 @@ public class CommunauteAgglomeration {
     }
 
     /**
-     * Permet de retirer la zone de recharge d'une ville spécifiée
+     * Permet de retirer manuellement la zone de recharge d'une ville spécifiée
      * Vérifie les conditions nécessaires pour retirer la recharge et affiche des messages appropriés
      *
      * @param ville La ville dont on souhaite retirer la zone de recharge
      * @throws NullPointerException si une exception de type NullPointerException est levée lors du retrait de la zone de recharge
      * @throws IllegalArgumentException si une exception de type IllegalArgumentException est levée lors du retrait de la zone de recharge
      */
-    public void retirerRecharge(Ville ville) {
+    public void retirerRechargemManuellement(Ville ville) {
         try {
             if (ville == null) {
                 throw new IllegalArgumentException("La ville ne peut pas être null.");
@@ -639,6 +634,42 @@ public class CommunauteAgglomeration {
             } else {
                 // Afficher un message d'erreur si la ville n'a pas de zone de recharge
                 System.err.println("\nImpossible de retirer la zone de recharge de " + ville.getNom() + ". La ville n'a pas de zone de recharge.");
+            }
+        } catch (NullPointerException e) {
+            // Gérer spécifiquement une éventuelle NullPointerException
+            System.out.println("NullPointerException lors du retrait de la zone de recharge : " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            // Gérer spécifiquement une éventuelle IllegalArgumentException
+            System.out.println("IllegalArgumentException lors du retrait de la zone de recharge : " + e.getMessage());
+        }
+    }
+
+    /**
+     * Permet de retirer la zone de recharge d'une ville spécifiée
+     * Vérifie les conditions nécessaires pour retirer la recharge et affiche des messages appropriés
+     *
+     * @param ville La ville dont on souhaite retirer la zone de recharge
+     * @throws NullPointerException si une exception de type NullPointerException est levée lors du retrait de la zone de recharge
+     * @throws IllegalArgumentException si une exception de type IllegalArgumentException est levée lors du retrait de la zone de recharge
+     */
+    public void retirerRecharge(Ville ville) {
+        try {
+            if (ville == null) {
+                throw new IllegalArgumentException("La ville ne peut pas être null.");
+            }
+            // Vérifier si la ville a une zone de recharge
+            if (ville.getZoneDeRecharge()) {
+                boolean etat = ville.getZoneDeRecharge(); // Enregistrer l'état actuel de la zone de recharge
+                ville.setZoneDeRechargeFalse(); // Supprimer la zone de recharge de la ville
+                // Vérifier si la ville peut retirer sa zone de recharge
+                if (peutRetirerRecharge(ville)) {
+                    // Vérifier si la contrainte est respectée pour ses voisins
+                    if (!contrainteVoisins(ville)) {
+                        ville.setZoneDeRecharge(etat); // Rétablir l'état précédent de la zone de recharge
+                    }
+                } else {
+                    ville.setZoneDeRecharge(etat); // Rétablir l'état précédent de la zone de recharge
+                }
             }
         } catch (NullPointerException e) {
             // Gérer spécifiquement une éventuelle NullPointerException
