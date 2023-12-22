@@ -133,7 +133,7 @@ public class Main extends Application {
         Button solveManuallyButton = new Button("Résoudre manuellement");
         solveManuallyButton.setOnAction(e -> {
             // Générer une solution initiale si les zones de recharge sont vides
-            if (communaute.getZonesRecharge().isEmpty() || communaute.getVillesSansZoneRecharge().size() > 0) {
+            if (communaute.getZonesRecharge().isEmpty() || !communaute.getVillesSansZoneRecharge().isEmpty()) {
                 communaute.genererSolutionInitiale();
             }
             // Créer une nouvelle fenêtre pour la résolution manuelle

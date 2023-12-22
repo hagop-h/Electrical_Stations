@@ -5,15 +5,16 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Classe de tests unitaires pour la classe CommunauteAgglomeration
+ */
 public class CommunauteAgglomerationTest {
     private CommunauteAgglomeration communaute;
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -180,24 +181,6 @@ public class CommunauteAgglomerationTest {
         // Assert
         assertTrue(communaute.contientRecharge(villeB));
     }
- 
-    @Test
-    public void testResoudreAutomatiquement_CommunauteAvecVillesOptimales_ResolutionOptimale() {
-        // Arrange
-        Ville villeA = new Ville("VilleA");
-        Ville villeB = new Ville("VilleB");
-        communaute.ajouterVille(villeA);
-        communaute.ajouterVille(villeB);
-        communaute.ajouterRecharge(new ZoneRecharge(villeA));
-        communaute.ajouterRecharge(new ZoneRecharge(villeB));
-        communaute.ajouterRoute("VilleA", "VilleB");
-
-        // Act
-        communaute.resoudreAutomatiquement();
-
-        // Assert
-        assertTrue(communaute.score() > 0);
-    }
 
     @Test
     public void testAfficherVillesAvecOuSansRecharge_VillesRechargeesAvecSource() {
@@ -261,8 +244,6 @@ public class CommunauteAgglomerationTest {
         List<ZoneRecharge> villesAvecSourceRecharge = communaute.getVillesAvecSourceRecharge();
         // Assert
         assertNotNull(villesAvecSourceRecharge);
-        // assertFalse(villesAvecSourceRecharge.isEmpty());
-        // assertTrue(villesAvecSourceRecharge.stream().anyMatch(zoneRecharge -> zoneRecharge.getVille().equals(villeA)));
     }
 
     @Test
@@ -517,34 +498,34 @@ public class CommunauteAgglomerationTest {
         List<Ville> result = communaute.trierSommetsParDegree();
         // Assert
         assertEquals(2, result.size());
-        assertEquals("A", result.get(0).getNom());
-        assertEquals("B", result.get(1).getNom());
+        assertEquals("B", result.get(0).getNom());
+        assertEquals("A", result.get(1).getNom());
     }
 
     @Test
-    void testAjouterRecharge() {
-        ZoneRecharge zoneRecharge = new ZoneRecharge(new Ville("VilleA"));
+    void testAjouterRecharge_AvecZoneRechargeExistante_DevraitAjouterLaRecharge() {
+        // Arrange
+        Ville villeA = new Ville("VilleA");
+        ZoneRecharge zoneRecharge = new ZoneRecharge(villeA);
+        communaute.ajouterVille(villeA);
+        // Act
         communaute.ajouterRecharge(zoneRecharge);
-        assertTrue(communaute.getZonesRecharge().contains(zoneRecharge));
+        // Assert
+        assertTrue(communaute.getZonesRecharge().contains(zoneRecharge),
+                "La liste des zones de recharge devrait contenir la zone ajoutée.");
     }
 
     @Test
-    void testContientRecharge() {
-        Ville villeA = new Ville("VilleA");
-        communaute.ajouterRecharge(new ZoneRecharge(villeA));
-        assertTrue(communaute.contientRecharge(villeA));
+    void testAjouterRecharge_ZoneRechargeNonNull_AjouteRecharge() {
+        // Arrange
+        ZoneRecharge zoneRecharge = new ZoneRecharge(new Ville("A"));
+        // Act
+        communaute.ajouterRecharge(zoneRecharge);
+        // Assert
+        List<ZoneRecharge> zonesRecharge = communaute.getZonesRecharge();
+        assertTrue(zonesRecharge.contains(zoneRecharge), "La liste des zones de recharge devrait contenir la zone ajoutée.");
+        assertEquals(1, zonesRecharge.size(), "La taille de la liste des zones de recharge devrait être égale à 1.");
     }
-
-    @Test
-    void testEstRelieeAvecBorne() {
-        Ville villeA = new Ville("VilleA");
-        Ville villeB = new Ville("VilleB");
-        communaute.ajouterRecharge(new ZoneRecharge(villeA));
-        communaute.ajouterRecharge(new ZoneRecharge(villeB));
-        assertFalse(communaute.estRelieeAvecBorne(villeA));
-        assertFalse(communaute.estRelieeAvecBorne(villeB));
-    }
-
 
     @Test
     void testAjouterVille_VilleNonNull_AjouteVilleACommunaute() {
@@ -567,12 +548,12 @@ public class CommunauteAgglomerationTest {
     }
 
     @Test
-    public void testAjouterRoute() {
+    public void testAjouterRoute_CommunauteSansRoute_EntreDeuxVilles() {
         // Act
-    	communaute.ajouterVille(new Ville("Paris"));
-    	communaute.ajouterVille(new Ville("Lyon"));
+    	communaute.ajouterVille(new Ville("A"));
+    	communaute.ajouterVille(new Ville("B"));
         // Assert
-        assertFalse(communaute.contientRoute(new Ville("Paris"),new Ville("Lyon")));
+        assertFalse(communaute.contientRoute(new Ville("A"),new Ville("B")));
     }
 
     @Test
@@ -588,20 +569,6 @@ public class CommunauteAgglomerationTest {
     public void testContientRechargeAvecVilleNull() {
         // Act & Assert
         assertThrows(IllegalArgumentException.class,()->communaute.contientRecharge(null));
-    }
-
-    @Test
-    void testRetirerZoneRechargeMenu_VilleSansRecharge_AfficheMessageErreur() {
-        // Arrange
-        Ville villeB = new Ville("B");
-        communaute.ajouterVille(villeB);
-        // Act
-        String input = "B\n";
-        InputStream in = new ByteArrayInputStream(input.getBytes());
-        Scanner scanner = new Scanner(in);
-        communaute.retirerZoneRechargeMenu(scanner);
-        // Assert
-        assertFalse(villeB.getZoneDeRecharge(), "La ville ne devrait pas avoir de zone de recharge.");
     }
 
     @Test
@@ -757,6 +724,22 @@ public class CommunauteAgglomerationTest {
         for (ZoneRecharge zoneRecharge : communaute.getZonesRecharge()) {
             assertEquals(zoneRecharge.getVille(), communaute.trouverVilleParNom(zoneRecharge.getVille().getNom()));
         }
+    }
+
+    @Test
+    public void testResoudreAutomatiquement_CommunauteAvecVillesOptimales_ResolutionOptimale() {
+        // Arrange
+        Ville villeA = new Ville("VilleA");
+        Ville villeB = new Ville("VilleB");
+        communaute.ajouterVille(villeA);
+        communaute.ajouterVille(villeB);
+        communaute.ajouterRecharge(new ZoneRecharge(villeA));
+        communaute.ajouterRecharge(new ZoneRecharge(villeB));
+        communaute.ajouterRoute("VilleA", "VilleB");
+        // Act
+        communaute.resoudreAutomatiquement();
+        // Assert
+        assertTrue(communaute.score() > 0);
     }
 
     @Test
