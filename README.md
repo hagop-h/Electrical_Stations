@@ -72,7 +72,7 @@ utilisez plutôt la commande suivante dans le répertoire racine du projet :
 javac --module-path <chemin_vers_javafx_sdk>/lib --add-modules javafx.controls -d out/production/Electrical_Stations src/application/*.java src/phase2/*.java
 ```
 
-Notez bien que vous devez remplacer <chemin_vers_javafx_sdk> par le chemin réel vers votre JavaFX SDK.
+Notez bien que vous devez remplacer <chemin_vers_javafx_sdk> par le chemin réel vers votre JavaFX SDK. N'oubliez pas d'ajouter "/lib" après ce dernier.
 
 ## Execution
 
@@ -101,7 +101,7 @@ utilisez plutôt la commande suivante dans le répertoire racine du projet :
 java --module-path <chemin_vers_javafx_sdk>/lib --add-modules javafx.controls -cp out/production/Electrical_Stations application.Main
 ```
   
-Notez bien que vous devez remplacer <chemin_vers_javafx_sdk> par le chemin réel vers votre JavaFX SDK.
+Notez bien que vous devez remplacer <chemin_vers_javafx_sdk> par le chemin réel vers votre JavaFX SDK. N'oubliez pas d'ajouter "/lib" après ce dernier.
 
 ## Phase 1 (produit initial)
 
