@@ -188,6 +188,7 @@ Sa fonctionnalité principale est de représenter et de manipuler les différent
 3. Les classes Graphe, Ville, et Route interagissent de manière complémentaire pour représenter et gérer la communauté d'agglomération.
 4. Les fonctionnalités d'entrées-sorties utilisent des classes Java standard comme Scanner et FileWriter pour assurer la manipulation correcte des fichiers et des données.
 5. L'architecture du code permet une gestion modulaire et extensible des fonctionnalités, facilitant l'ajout d'algorithmes plus avancés pour la résolution automatique du problème.
+6. Le programme adopte une approche où l'ajout de chemins de fichiers ne vérifie pas immédiatement les contraintes. Il effectue cette vérification dans la solution manuelle pour les zones de recharge, et bien-sûr la solution automatique garantit le respect des contraintes.
 
 ## Licence
 

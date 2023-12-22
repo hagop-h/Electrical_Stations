@@ -1,5 +1,6 @@
 package phase2;
 
+import java.io.File;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -17,15 +18,23 @@ public class Main {
         String cheminFichier; // Déclaration et initialisation d'une variable pour stocker le chemin du fichier
         // Création d'une instance de Scanner pour lire l'entrée utilisateur
         try (Scanner scanner = new Scanner(System.in)) {
-            // Vérifier si un chemin de fichier est fourni en argument
-            if (args.length != 1) {
-                // Si aucun argument n'est fourni, demander à l'utilisateur d'entrer le chemin du fichier via la console
-                System.out.println("Veuillez entrer le chemin du fichier :");
-                cheminFichier = scanner.nextLine(); // Lire le chemin du fichier depuis la console
-            } else {
-                // Si un argument est fourni, utiliser le premier argument comme chemin de fichier
-                cheminFichier = args[0];
-            }
+            File fichier;
+            do {
+                // Vérifier si un chemin de fichier est fourni en argument
+                if (args.length != 1) {
+                    // Si aucun argument n'est fourni, demander à l'utilisateur d'entrer le chemin du fichier via la console
+                    System.out.println("Veuillez entrer le chemin du fichier :");
+                    cheminFichier = scanner.nextLine(); // Lire le chemin du fichier depuis la console
+                } else {
+                    // Si un argument est fourni, utiliser le premier argument comme chemin de fichier
+                    cheminFichier = args[0];
+                }
+                // Vérifier si le fichier existe
+                fichier = new File(cheminFichier);
+                if (!fichier.exists()) {
+                    System.out.println("Le fichier spécifié n'existe pas. Veuillez réessayer.\n");
+                }
+            } while (args.length != 1 && !fichier.exists());
             CommunauteAgglomeration communaute = new CommunauteAgglomeration(); // Créer une instance de la classe CommunauteAgglomeration
             // Utiliser un bloc try-catch pour gérer les exceptions lors du chargement de la communauté
             communaute.chargerCommunaute(cheminFichier); // Charger la communauté à partir du fichier spécifié
