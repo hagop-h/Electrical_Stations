@@ -4,7 +4,6 @@ package phase1;
  * Classe représentant une ville
  */
 public class Ville {
-
     private final NomVille nom; // Le nom de la ville
     private boolean sourceVille = false; // Indique si la ville est une source de recharge
 
@@ -56,15 +55,5 @@ public class Ville {
      */
     public NomVille getNom() {
         return nom;
-    }
-
-    /**
-     * Méthode toString pour afficher les informations de la ville
-     *
-     * @return Une représentation textuelle de la ville
-     */
-    @Override
-    public String toString() {
-        return "Ville {" + "nom = " + nom + ", sourceVille = " + sourceVille + " }";
     }
 }

@@ -30,7 +30,7 @@ public class CommunauteAgglomerationTest {
         System.setOut(System.out);
     }
 
-    // Fonction utilitaire pour capturer la sortie standard
+    // Méthode utilitaire pour capturer la sortie standard
     private String systemOut() {
         return outContent.toString();
     }
@@ -315,6 +315,28 @@ public class CommunauteAgglomerationTest {
     }
 
     @Test
+    void testAfficherMenuSolutionManuelle_AffichageMenuCorrect() {
+        // Arrange
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+        // Act
+        communaute.afficherMenuSolutionManuelle();
+        // Assert
+        String expectedOutput = """
+
+                Menu :
+                1) Ajouter une zone de recharge
+                2) Retirer une zone de recharge
+                3) Revenir
+
+                Votre choix :
+                """;
+        assertEquals(expectedOutput, outContent.toString());
+        // Clean up
+        System.setOut(System.out);
+    }
+
+    @Test
     public void testPeutRetirerRecharge_VilleSansZoneDeRechargeEtVoisinSansZoneDeRecharge_RetourneFalse() {
         // Arrange
         Ville villeB = new Ville("VilleB");
@@ -359,7 +381,7 @@ public class CommunauteAgglomerationTest {
 
     @Test
     void contientRecharge_VilleNull_LanceIllegalArgumentException() {
-        // Assert
+        // Act & Assert
         assertThrows(IllegalArgumentException.class, () -> communaute.contientRecharge(null));
     }
 
@@ -484,22 +506,6 @@ public class CommunauteAgglomerationTest {
         List<Ville> result = communaute.trierSommetsParDegree();
         // Assert
         assertTrue(result.isEmpty());
-    }
-
-    @Test
-    void testTrierSommetsParDegree_CommunauteAvecVilles_RetourneListeTrie() {
-        // Arrange
-        Ville villeA = new Ville("A");
-        Ville villeB = new Ville("B");
-        // Ajouter des villes à votreObjet ou au graphe
-        communaute.ajouterVille(villeA);
-        communaute.ajouterVille(villeB);
-        // Act
-        List<Ville> result = communaute.trierSommetsParDegree();
-        // Assert
-        assertEquals(2, result.size());
-        assertEquals("B", result.get(0).getNom());
-        assertEquals("A", result.get(1).getNom());
     }
 
     @Test

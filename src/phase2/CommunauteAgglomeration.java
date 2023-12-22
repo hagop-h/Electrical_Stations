@@ -738,8 +738,8 @@ public class CommunauteAgglomeration {
      * Méthode auxiliaire récursive utilisée par contrainteVoisins pour vérifier si la contrainte des voisins est respectée
      * La contrainte des voisins stipule qu'une ville doit avoir au moins un voisin avec une zone de recharge
      *
-     * @param ville    La ville pour laquelle on vérifie la contrainte des voisins
-     * @param visited  Un ensemble de villes déjà visitées pendant la vérification
+     * @param ville La ville pour laquelle on vérifie la contrainte des voisins
+     * @param visited Un ensemble de villes déjà visitées pendant la vérification
      * @return vrai si la contrainte des voisins est respectée, sinon faux
      * @throws IllegalArgumentException si une exception de type IllegalArgumentException est levée lors de la vérification de la contrainte des voisins
      */
@@ -842,7 +842,7 @@ public class CommunauteAgglomeration {
                 }
             }
             // Afficher un message indiquant que la communauté a été chargée avec succès
-            System.out.println("\nCommunauté chargée depuis le fichier : " + cheminFichier + "\n");
+            System.out.println("\nCommunauté chargée depuis le fichier : " + cheminFichier);
         } catch (FileNotFoundException e) {
             // En cas d'erreur de fichier non trouvé, affiche un message d'erreur
             System.err.println("\nFichier non trouvé : " + cheminFichier);
@@ -913,12 +913,12 @@ public class CommunauteAgglomeration {
         // Générer une solution initiale si la liste des chargeurs est vide ou s'il existe des villes non rechargées
         if (zonesRecharge.isEmpty() || !getVillesSansZoneRecharge().isEmpty()) {
             genererSolutionInitiale();
-            System.out.println("\nSolution naïve :");
+            System.out.println("\n*Solution naïve*");
             System.out.println("\nScore : " + score());
             afficherVillesAvecOuSansRecharge();
         }
         try {
-            System.out.println("\nSolution optimale :");
+            System.out.println("\n*Solution optimale*");
             int maxIterations = 5; // Nombre maximal d'itérations
             scoreCourant = score(); // Initialiser scoreCourant avec le score actuel
             // Obtenir la liste des sommets triés par degré en ordre décroissant
